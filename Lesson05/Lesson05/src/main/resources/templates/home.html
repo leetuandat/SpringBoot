@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--Sử dụng header fragments-->
+<head th:replace="fragments/_layout :: head(${title})">
+    <meta charset="UTF-8">
+    <title>Xeng</title>
+</head>
+<body>
+<!--Sử dụng Header Fragment-->
+<header th:replace="fragments/_layout :: header"></header>
+
+<!--Nội dung chính của trang chủ-->
+<section class="container" style="min-height: 260px">
+  <div class="row">
+    <h1>Đây là trang chủ</h1>
+  </div>
+
+<!--Sử dụng Menu fragment / chèn menu-->
+  <nav th:insert="fragments/_layout :: menu"></nav>
+</section>
+
+<!--Sử dụng footer fragment-->
+<footer th:replace="fragments/_layout :: footer"></footer>
+
+</body>
+</html>
