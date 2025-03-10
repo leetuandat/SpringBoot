@@ -16,6 +16,7 @@ import jakarta.persistence.Table;
 import lombok.*;
 import lombok.Generated;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
