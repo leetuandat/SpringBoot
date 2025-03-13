@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Navbar</title>
 </head>
 <body>
-$END$
+<div th:fragment="navbar">
+  <nav>
+    <ul>
+      <li th:each="item : ${menuItems}">
+        <a th:text="${item}" th:href="@{/admin/{name}(name=${item.toLowerCase()})}"></a>
+      </li>
+      <li><a th:href="@{/home}">Quay Lại Trang Chủ</a></li>
+    </ul>
+  </nav>
+</div>
 </body>
 </html>

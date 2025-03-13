@@ -1,10 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--Sử dụng header trong fragment-->
+<head th:replace="fragments/_layout :: head(${title})">
+    <meta charset="UTF-8">
+    <title>Xeng</title>
 </head>
 <body>
-$END$
+<!--Sử dụng lại header trong _layout-->
+<header th:replace="fragments/_layout :: header"></header>
+
+<section style="min-height: 250px" class="container border">
+    <div class="row flex-column">
+        <h1>Đây là trang liên hệ</h1>
+        <hr/>
+        <div>Tâng 6, Tòa <b>VIỆN CÔNG NGHỆ</b></div>
+        <hr/>
+        <div>Số 25, Phố Vũ Ngọc Phan, Láng Hạ, Đống Đa, Hà Nội</div>
+    </div>
+</section>
+
+<!--Sử dụng footer từ layout-->
+<footer th:replace="fragments/_layout :: footer">
+    <h1>Xeng</h1>
+</footer>
+
 </body>
 </html>

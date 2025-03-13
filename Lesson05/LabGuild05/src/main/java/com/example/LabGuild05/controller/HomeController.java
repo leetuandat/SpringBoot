@@ -13,28 +13,15 @@ package com.example.LabGuild05.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 
 @Controller
-public class UserController {
-
+public class HomeController {
     @GetMapping("/home")
     public String homePage(Model model) {
         model.addAttribute("title", "Trang chủ");
-        model.addAttribute("content", "home :: content");
+        model.addAttribute("content", "home :: content"); // Đảm bảo fragment đúng
         return "layout";
     }
-
-    @GetMapping("/admin")
-    public String adminPage(Model model) {
-        model.addAttribute("title", "Trang quản trị");
-        return "admin";
-    }
-
-    @GetMapping("/list")
-    public String listPage(Model model) {
-        model.addAttribute("title", "Danh sách");
-        return "list";
-    }
 }
+

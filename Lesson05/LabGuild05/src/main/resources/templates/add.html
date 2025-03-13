@@ -1,10 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Thêm Bài Viết Mới</title>
 </head>
 <body>
-$END$
+<div th:fragment="content">
+  <h2>Thêm Bài Viết Mới</h2>
+  <form th:action="@{/post/add}" th:object="${post}" method="post">
+    <label>Tiêu đề:</label>
+    <input type="text" th:field="~{title}" placeholder="Nhập tiêu đề" required />
+
+    <label>Nội dung:</label>
+    <textarea th:field="~{content}" placeholder="Nhập nội dung" required></textarea>
+
+    <button type="submit">Thêm</button>
+  </form>
+</div>
 </body>
 </html>

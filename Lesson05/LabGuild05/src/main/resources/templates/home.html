@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title th:text = "${title}">Trang chủ</title>
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-
+<div th:fragment="content">
+    <h2>Chào mừng đến với LabGuide05</h2>
+    <p>Đây là trang chủ của ứng dụng. Bạn có thể xem danh sách bài viết hoặc truy cập trang quản trị.</p>
+</div>
 </body>
 </html>

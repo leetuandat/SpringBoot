@@ -31,14 +31,26 @@ public class HomeController {
    public String profile(Model model) {
         List<Info> profile = new ArrayList<>();
         profile.add(new Info("Dat Le", "xeng", "datle24034@gmail.com", "https://www.facebook.com/atle.631578/"));
-        profile.add(new Info("Anh Le", "gacon", "unin310102@gmail.com", "https://www.facebook.com/iuck.631578/"));
+        profile.add(new Info("Uyen Le", "gacon", "unin310102@gmail.com", "https://www.facebook.com/iuck.631578/"));
         model.addAttribute("DatProfile", profile);
         return "profile";
    }
 
    @GetMapping("/home")
     public String home(Model model) {
-        model.addAttribute("title", "Xeng:Home");
+        model.addAttribute("title", "DatLe::Home");
         return "home";
+   }
+
+   @GetMapping("/about")
+    public String about(Model model) {
+        model.addAttribute("title", "DatLe::About");
+        return "about";
+   }
+
+   @GetMapping("/contact")
+    public String contact(Model model) {
+        model.addAttribute("title", "DatLe::Hãy liên hệ với chúng tôi");
+        return "contact";
    }
 }

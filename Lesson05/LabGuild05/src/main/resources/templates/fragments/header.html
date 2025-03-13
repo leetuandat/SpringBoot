@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}">
+    <meta charset="UTF-8">
+    <title th:text="${title}">Tiêu đề mặc định</title>
 </head>
 <body>
-$END$
+<div th:fragment="header">
+    <header>
+        <h1 th:text="${title} ?: 'LabGuide05'"></h1>
+    </header>
+</div>
 </body>
 </html>

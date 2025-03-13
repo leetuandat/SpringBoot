@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Trang Mặc Định</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-$END$
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/admin-navbar :: navbar}"></div>
+
+<div class="content">
+    <th:block th:replace="${content}"></th:block>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
