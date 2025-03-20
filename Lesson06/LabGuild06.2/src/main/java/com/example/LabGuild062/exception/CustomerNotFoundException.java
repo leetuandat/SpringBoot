@@ -1,5 +1,4 @@
 /**
- *
  * @author X.e.n.g
  * @version 1.O
  * @project name: LabGuild06.2
@@ -10,5 +9,9 @@
 
 package com.example.LabGuild062.exception;
 
-public class CustomerNotFoundException {
+public class CustomerNotFoundException extends RuntimeException {
+    public CustomerNotFoundException(String message) {
+        super(message);
+    }
+
 }

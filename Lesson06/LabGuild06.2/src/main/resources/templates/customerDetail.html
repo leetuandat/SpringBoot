@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Customer Detail</title>
 </head>
 <body>
-$END$
+<h1>Customer Detail</h1>
+<p>ID: <span th:text="${customer.id}"></span></p>
+<p>Username: <span th:text="${customer.username}"></span></p>
+<p>Full Name: <span th:text="${customer.fullName}"></span></p>
+<p>Email: <span th:text="${customer.email}"></span></p>
+<p>Phone: <span th:text="${customer.phone}"></span></p>
+<p>Address: <span th:text="${customer.address}"></span></p>
+<p>Birth Day: <span th:text="${customer.birthDay}"></span></p>
+<p>Status: <span th:text="${customer.active ? 'Active' : 'Inactive'}"></span></p>
+<a href="/customers">Back to list</a>
 </body>
 </html>

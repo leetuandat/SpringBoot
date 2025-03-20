@@ -64,4 +64,8 @@ public class StudentService {
             return studentRepository.save(student);
         }).orElseThrow(() -> new IllegalArgumentException("Invalid Student ID: "+ id));
     }
+
+    public void deleteStudent(Long id) {
+        studentRepository.deleteById(id);
+    }
 }

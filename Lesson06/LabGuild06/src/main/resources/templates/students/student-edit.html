@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name = "viewport" content = "width = device-width, user-scalable=no, initial-scale = 1, maximum-scale = 1, minimum-scale = 1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sửa thông tin sinh viên</title>
+    <link rel = "stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css   "></link>
+</head>
+<body style="background: #CCC">
+<header class="container bg-white">
+    <div class="logo">
+        <img src="https://devmaster.edu.vn/images/logo.png">
+    </div>
+</header>
+
+<section class="container bg-white py-3">
+    <form th:action="@{/students/update/{id}(id=${student.id})}" th:object="${student}" method="post">
+        <div class="card">
+            <div class="card-header">
+                <h2>SỬA THÔNG TIN SINH VIÊN</h2>
+            </div>
+            <div class="card-body">
+                <input type="hidden" th:field="*{id}"/>
+                <div class="mb-3 row">
+                    <label for="name" class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" th:field="*{name}" class="form-control" id="name" name="name" required>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="email" class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-10">
+                        <input type="email" th:field="*{email}" class="form-control" id="email" name="email" required>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="age" class="col-sm-2 col-form-label">Age</label>
+                    <div class="col-sm-10">
+                        <input type="number" th:field="*{age}" class="form-control" id="age" name="age" required>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a href="/students" class="btn btn-secondary">Back</a>
+            </div>
+        </div>
+    </form>
+</section>
+</body>
+</html>
