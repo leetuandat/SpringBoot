@@ -13,10 +13,15 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
-
+import jakarta.persistence.*;
+import lombok.*;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "ORDERS_DETAILS")
-@Data
+
 public class OrderDetail {
 
     @Id

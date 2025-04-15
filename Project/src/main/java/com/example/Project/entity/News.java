@@ -13,10 +13,15 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-
+import jakarta.persistence.*;
+import lombok.*;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "NEWS")
-@Data
+
 public class News {
 
     @Id

@@ -10,13 +10,16 @@
 package com.example.Project.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-
 import java.time.LocalDateTime;
+import lombok.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "CATEGORY")
-@Data
+
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

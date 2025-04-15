@@ -14,10 +14,15 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
+import jakarta.persistence.*;
+import lombok.*;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "ORDERS", uniqueConstraints = @UniqueConstraint(columnNames = "idOrders"))
-@Data
+
 public class Order {
 
     @Id

@@ -11,10 +11,15 @@ package com.example.Project.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
+import jakarta.persistence.*;
+import lombok.*;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "PRODUCT_IMAGES")
-@Data
+
 public class ProductImage {
 
     @Id

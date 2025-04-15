@@ -10,15 +10,19 @@
 package com.example.Project.entity;
 
 import com.example.Project.entity.Category;
-import jakarta.persistence.*;
-import lombok.Data;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
+import jakarta.persistence.*;
+import lombok.*;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "PRODUCT")
-@Data
+
 public class Product {
 
     @Id
@@ -48,7 +52,7 @@ public class Product {
     private BigDecimal price;
 
     @Column(nullable = false)
-    private Integer quatity;
+    private Integer quantity;
 
     @Column(length = 160)
     private String slug;
@@ -86,8 +90,8 @@ public class Product {
             this.price = BigDecimal.ZERO;
         }
 
-        if (this.quatity == null) {
-            this.quatity = 0;
+        if (this.quantity == null) {
+            this.quantity = 0;
         }
 
         if (this.isDelete == null) {
