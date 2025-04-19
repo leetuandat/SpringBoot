@@ -29,11 +29,11 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @GetMapping
-    public ResponseEntity<List<CategoryDTO>> findAll() {
-        List<CategoryDTO> categories = categoryService.findAll();
-        return ResponseEntity.ok(categories);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<CategoryDTO>> findAll(Pa) {
+//        List<CategoryDTO> categories = categoryService.findAll();
+//        return ResponseEntity.ok(categories);
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> findById(@PathVariable Long id) {

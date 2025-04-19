@@ -26,10 +26,10 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    @GetMapping
-    public ResponseEntity<List<CustomerDTO>> findAll() {
-        return ResponseEntity.ok(customerService.findAll());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<CustomerDTO>> findAll() {
+//        return ResponseEntity.ok(customerService.findAll());
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerDTO> findById(@PathVariable Long id) {
