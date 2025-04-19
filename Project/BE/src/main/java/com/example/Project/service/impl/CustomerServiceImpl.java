@@ -15,6 +15,8 @@ import com.example.Project.mapper.CustomerMapper;
 import com.example.Project.repository.CustomerRepository;
 import com.example.Project.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +30,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerMapper customerMapper;
 
     @Override
-    public List<CustomerDTO> findAll() {
-        return customerMapper.toDtoList(customerRepository.findAll());
+    public Page<CustomerDTO> findAll(Pageable pageable) {
+        return (customerRepository.findAll(pageable)).map(customerMapper::toDto);
     }
 
     @Override
@@ -68,8 +70,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<CustomerDTO> findByCustomerName(String keyword) {
-        List<Customer> customers = customerRepository.findByNameContainingIgnoreCase(keyword);
-        return customers.stream().map(customerMapper::toDto).collect(Collectors.toList());
+    public Page<CustomerDTO> findByCustomerName(String keyword, Pageable pageable) {
+        Page<Customer> customers = customerRepository.findByNameContainingIgnoreCase(keyword, pageable);
+        return customers.map(customerMapper::toDto);
     }
 }

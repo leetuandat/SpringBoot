@@ -17,6 +17,8 @@ import com.example.Project.repository.ProductImageRepository;
 import com.example.Project.repository.ProductRepository;
 import com.example.Project.service.ProductImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,8 +33,8 @@ public class ProductImageServiceImpl implements ProductImageService {
     private final ProductRepository productRepository;
 
     @Override
-    public List<ProductImageDTO> findAll() {
-        return productImageMapper.toDtoList(productImageRepository.findAll());
+    public Page<ProductImageDTO> findAll(Pageable pageable) {
+        return (productImageRepository.findAll(pageable)).map(productImageMapper::toDto);
     }
 
     @Override
@@ -72,8 +74,8 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
 
     @Override
-    public List<ProductImageDTO> findByProductImageName(String keyword) {
-        List<ProductImage> images = productImageRepository.findByNameContainingIgnoreCase(keyword);
-        return images.stream().map(productImageMapper::toDto).collect(Collectors.toList());
+    public Page<ProductImageDTO> findByProductImageName(String keyword, Pageable pageable) {
+        Page<ProductImage> images = productImageRepository.findByNameContainingIgnoreCase(keyword, pageable);
+        return images.map(productImageMapper::toDto);
     }
 }

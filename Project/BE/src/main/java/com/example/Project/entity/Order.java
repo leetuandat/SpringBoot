@@ -22,7 +22,6 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "ORDERS", uniqueConstraints = @UniqueConstraint(columnNames = "idOrders"))
-
 public class Order {
 
     @Id
@@ -46,14 +45,13 @@ public class Order {
     @JoinColumn(name = "idTransport")
     private TransportMethod transportMethod;
 
-
     private BigDecimal totalMoney;
 
     @Lob
     private String notes;
 
     @Column(length = 250)
-    private String nameReciver;
+    private String nameReceiver; // ← Đã sửa đúng tên
 
     @Column(length = 500)
     private String address;
@@ -75,13 +73,12 @@ public class Order {
         if (this.ordersDate == null) {
             this.ordersDate = LocalDateTime.now();
         }
-
         if (this.isDelete == null) {
             this.isDelete = false;
         }
-
         if (this.isActive == null) {
             this.isActive = true;
         }
     }
 }
+

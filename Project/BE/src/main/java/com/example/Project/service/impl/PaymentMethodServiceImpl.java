@@ -16,6 +16,8 @@ import com.example.Project.repository.PaymentMethodRepository;
 import com.example.Project.service.PaymentMethodService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,8 +31,8 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     private final PaymentMethodMapper paymentMethodMapper;
 
     @Override
-    public List<PaymentMethodDTO> findAll() {
-        return paymentMethodMapper.toDtoList(paymentMethodRepository.findAll());
+    public Page<PaymentMethodDTO> findAll(Pageable pageable) {
+        return (paymentMethodRepository.findAll(pageable)).map(paymentMethodMapper::toDto);
     }
 
     @Override
@@ -65,8 +67,8 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     }
 
     @Override
-    public List<PaymentMethodDTO> findByPaymentMethodName(String keyword) {
-        List<PaymentMethod> methods = paymentMethodRepository.findByNameContainingIgnoreCase(keyword);
-        return methods.stream().map(paymentMethodMapper::toDto).collect(Collectors.toList());
+    public Page<PaymentMethodDTO> findByPaymentMethodName(String keyword, Pageable pageable) {
+        Page<PaymentMethod> methods = paymentMethodRepository.findByNameContainingIgnoreCase(keyword, pageable);
+        return methods.map(paymentMethodMapper::toDto);
     }
 }

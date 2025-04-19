@@ -15,6 +15,8 @@ import com.example.Project.mapper.ProductMapper;
 import com.example.Project.repository.ProductRepository;
 import com.example.Project.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +30,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
 
     @Override
-    public List<ProductDTO> findAll() {
-        return productMapper.toDtoList(productRepository.findAll());
+    public Page<ProductDTO> findAll(Pageable pageable) {
+        return (productRepository.findAll(pageable)).map(productMapper::toDto);
     }
 
     @Override
@@ -71,8 +73,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> findByProductName(String keyword) {
-        List<Product> products = productRepository.findByNameContainingIgnoreCase(keyword);
-        return products.stream().map(productMapper::toDto).collect(Collectors.toList());
+    public Page<ProductDTO> findByProductName(String keyword, Pageable pageable) {
+        Page<Product> products = productRepository.findByNameContainingIgnoreCase(keyword, pageable);
+        return products.map(productMapper::toDto);
     }
 }

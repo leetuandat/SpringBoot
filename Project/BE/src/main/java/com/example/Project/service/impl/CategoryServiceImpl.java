@@ -15,6 +15,9 @@ import com.example.Project.mapper.CategoryMapper;
 import com.example.Project.repository.CategoryRepository;
 import com.example.Project.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,9 +30,9 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryMapper categoryMapper;
 
     @Override
-    public List<CategoryDTO> findAll() {
-        List<Category> categoryList = categoryRepository.findAll();
-        return categoryMapper.toDtoList(categoryList);
+    public Page<CategoryDTO> findAll(Pageable pageable) {
+        Page<Category> categoryPage = categoryRepository.findAll(pageable);
+        return categoryPage.map(categoryMapper::toDto);
     }
 
     @Override
@@ -66,8 +69,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDTO> findByCategoryName(String keyword) {
-        List<Category> categories = categoryRepository.findByNameContainingIgnoreCase(keyword);
-        return categories.stream().map(categoryMapper::toDto).collect(Collectors.toList());
+    public Page<CategoryDTO> findByCategoryName(String keyword, Pageable pageable) {
+        Page<Category> categories = categoryRepository.findByNameContainingIgnoreCase(keyword, pageable);
+        return categories.map(categoryMapper::toDto);
     }
 }

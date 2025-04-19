@@ -10,7 +10,11 @@
 package com.example.Project.repository;
 
 import com.example.Project.entity.NewsCategory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
 public interface NewsCategoryRepository extends JpaRepository<NewsCategory, Long> {
+    Page<NewsCategory> findByNameContainingIgnoreCase(String keyword, Pageable pageable);
 }

@@ -26,11 +26,17 @@ public class ProductConfig {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @Column(name = "idProduct", nullable = false)
+    private Long idProduct;
+
+    @Column(name = "idConfig", nullable = false)
+    private Long idConfig;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idProduct", insertable = false, updatable = false)
     private Product product;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idConfig", insertable = false, updatable = false)
     private Configuration configuration;
 

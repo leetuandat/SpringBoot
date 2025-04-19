@@ -20,19 +20,35 @@ import java.time.LocalDateTime;
 
 public record OrderDTO(
         Long id,
+
         @NotBlank(message = "orderCode cannot be blank")
         String orderCode,
+
         LocalDateTime orderDate,
+
         @NotNull(message = "customerId is required")
         Long customerId,
+
+        @NotNull(message = "paymentId is required")
+        Long paymentId,
+
+        @NotNull(message = "transportId is required")
+        Long transportId,
+
         @DecimalMin(value = "0.0", message = "Total money cannot be negative")
         BigDecimal totalMoney,
+
         String notes,
+
         String nameReceiver,
+
         String address,
+
         @Email(message = "Email is not valid")
         String email,
+
         String phone,
+
         @NotNull(message = "isActive cannot be null")
         Boolean isActive
-){}
+) {}

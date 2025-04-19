@@ -12,13 +12,32 @@ package com.example.Project.mapper;
 import com.example.Project.dto.OrderDetailDTO;
 import com.example.Project.entity.OrderDetail;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderDetailMapper {
+
+    @Mappings({
+            @Mapping(source = "id", target = "id"),
+            @Mapping(target = "productId", expression = "java(entity.getProduct() != null ? entity.getProduct().getId() : null)"),
+            @Mapping(source = "price", target = "price"),
+            @Mapping(source = "qty", target = "quantity"),
+            @Mapping(source = "total", target = "total")
+    })
     OrderDetailDTO toDto(OrderDetail entity);
+
+    @Mappings({
+            @Mapping(source = "id", target = "id"),
+            @Mapping(target = "product.id", source = "productId"),
+            @Mapping(source = "price", target = "price"),
+            @Mapping(source = "quantity", target = "qty"),
+            @Mapping(source = "total", target = "total")
+    })
     OrderDetail toEntity(OrderDetailDTO dto);
+
     List<OrderDetailDTO> toDtoList(List<OrderDetail> entities);
     List<OrderDetail> toEntityList(List<OrderDetailDTO> dtos);
 }

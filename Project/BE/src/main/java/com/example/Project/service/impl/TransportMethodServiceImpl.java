@@ -15,6 +15,8 @@ import com.example.Project.mapper.TransportMethodMapper;
 import com.example.Project.repository.TransportMethodRepository;
 import com.example.Project.service.TransportMethodService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +30,8 @@ public class TransportMethodServiceImpl implements TransportMethodService {
     private final TransportMethodMapper transportMethodMapper;
 
     @Override
-    public List<TransportMethodDTO> findAll() {
-        return transportMethodMapper.toDtoList(transportMethodRepository.findAll());
+    public Page<TransportMethodDTO> findAll(Pageable pageable) {
+        return (transportMethodRepository.findAll(pageable)).map(transportMethodMapper::toDto);
     }
 
     @Override
@@ -62,8 +64,8 @@ public class TransportMethodServiceImpl implements TransportMethodService {
     }
 
     @Override
-    public List<TransportMethodDTO> findByTransportName(String keyword) {
-        List<TransportMethod> transportMethodList = transportMethodRepository.findByNameContainingIgnoreCase(keyword);
-        return transportMethodList.stream().map(transportMethodMapper::toDto).collect(Collectors.toList());
+    public Page<TransportMethodDTO> findByTransportName(String keyword, Pageable pageable) {
+        Page<TransportMethod> transportMethodList = transportMethodRepository.findByNameContainingIgnoreCase(keyword, pageable);
+        return transportMethodList.map(transportMethodMapper::toDto);
     }
 }
