@@ -20,6 +20,8 @@ public record ProductDTO(
         Long id,
         @NotBlank(message = "Product name is required")
         String name,
+        Long authorId,
+        String authorName,
         String description,
         @DecimalMin(value = "0.0", message = "Price cannot be negative")
         BigDecimal price,

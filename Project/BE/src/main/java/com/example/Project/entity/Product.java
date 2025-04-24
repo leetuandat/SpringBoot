@@ -32,6 +32,10 @@ public class Product {
     @Column(length = 500)
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idAuthor")
+    private Author author;
+
     @Lob
     private String description;
 

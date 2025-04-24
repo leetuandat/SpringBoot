@@ -12,6 +12,7 @@ package com.example.Project.service.impl;
 import com.example.Project.dto.ProductDTO;
 import com.example.Project.entity.Product;
 import com.example.Project.mapper.ProductMapper;
+import com.example.Project.repository.AuthorRepository;
 import com.example.Project.repository.ProductRepository;
 import com.example.Project.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final AuthorRepository authorRepository;
 
     @Override
     public Page<ProductDTO> findAll(Pageable pageable) {
@@ -45,6 +47,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO save(ProductDTO dto) {
         Product entity = productMapper.toEntity(dto);
         entity.setIsDelete(false);
+        entity.setAuthor(authorRepository.findById(dto.authorId()).orElseThrow());
         Product saved = productRepository.save(entity);
         return productMapper.toDto(saved);
     }
