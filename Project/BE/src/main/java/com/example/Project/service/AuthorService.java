@@ -18,4 +18,5 @@ public interface AuthorService {
     List<AuthorDTO> getAllAuthors();
     AuthorDTO updateAuthor(Long id, AuthorDTO dto);
     void deleteAuthor(Long id);
+    List<AuthorDTO> findByAuthorName(String authorName);
 }

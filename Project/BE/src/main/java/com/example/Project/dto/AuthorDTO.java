@@ -7,6 +7,5 @@ public record AuthorDTO(
         String name,
         String authorKey,
         String biography,
-        String image,
-        List<String> bookTitles
+        String image
 ) {}

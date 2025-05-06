@@ -13,6 +13,8 @@ import com.example.Project.dto.CustomerDTO;
 import com.example.Project.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +28,10 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-//    @GetMapping
-//    public ResponseEntity<List<CustomerDTO>> findAll() {
-//        return ResponseEntity.ok(customerService.findAll());
-//    }
+    @GetMapping
+    public ResponseEntity<Page<CustomerDTO>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(customerService.findAll(pageable));
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerDTO> findById(@PathVariable Long id) {
@@ -53,5 +55,10 @@ public class CustomerController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         customerService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<CustomerDTO>> searchCustomer(@RequestParam String keyword, Pageable pageable) {
+        return ResponseEntity.ok(customerService.findByCustomerName(keyword, pageable));
     }
 }

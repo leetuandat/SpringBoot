@@ -39,7 +39,4 @@ public class Author {
     @Column(length = 500)
     private String image; // URL ảnh tác giả
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> books;
-
 }

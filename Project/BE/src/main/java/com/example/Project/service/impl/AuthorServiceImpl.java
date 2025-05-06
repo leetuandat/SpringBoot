@@ -68,4 +68,10 @@ public class AuthorServiceImpl implements AuthorService {
         }
         authorRepository.deleteById(id);
     }
+
+    @Override
+    public List<AuthorDTO> findByAuthorName(String authorName) {
+        List<Author> authors = authorRepository.findByNameIgnoreCaseContaining(authorName);
+        return authors.stream().map(authorMapper::toDTO).toList();
+    }
 }
