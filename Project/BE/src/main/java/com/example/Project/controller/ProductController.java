@@ -17,9 +17,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/books")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class ProductController {
 
     private final ProductService productService;
@@ -29,7 +32,13 @@ public class ProductController {
         return ResponseEntity.ok(productService.findAll(pageable));
     }
 
-    @GetMapping("/products/search")
+    @GetMapping("/multi")
+    public ResponseEntity<List<ProductDTO>> findByIds(@RequestParam List<Long> ids) {
+        return ResponseEntity.ok(productService.findByIds(ids));
+    }
+
+
+    @GetMapping("/search")
     public ResponseEntity<Page<ProductDTO>> searchProduct(@RequestParam String keyword, Pageable pageable) {
         return ResponseEntity.ok(productService.findByProductName(keyword, pageable));
     }

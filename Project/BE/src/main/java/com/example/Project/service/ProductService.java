@@ -13,5 +13,6 @@ public interface ProductService {
     ProductDTO save(ProductDTO dto);
     ProductDTO update(Long id, ProductDTO dto);
     void delete(Long id);
+    List<ProductDTO> findByIds(List<Long> ids);
     Page<ProductDTO> findByProductName(String keyword, Pageable pageable);
 }

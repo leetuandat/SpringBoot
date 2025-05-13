@@ -76,6 +76,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDTO> findByIds(List<Long> ids) {
+        List<Product> products = productRepository.findAllById(ids);
+        return products.stream()
+                .map(productMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Page<ProductDTO> findByProductName(String keyword, Pageable pageable) {
         Page<Product> products = productRepository.findByNameContainingIgnoreCase(keyword, pageable);
         return products.map(productMapper::toDto);
