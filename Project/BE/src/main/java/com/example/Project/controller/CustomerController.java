@@ -10,6 +10,10 @@
 package com.example.Project.controller;
 
 import com.example.Project.dto.CustomerDTO;
+import com.example.Project.dto.CustomerUpdateDTO;
+import com.example.Project.entity.Customer;
+import com.example.Project.mapper.CustomerMapper;
+import com.example.Project.repository.CustomerRepository;
 import com.example.Project.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,8 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final CustomerRepository customerRepository;
+    private final CustomerMapper customerMapper;
 
     @GetMapping
     public ResponseEntity<Page<CustomerDTO>> findAll(Pageable pageable) {
@@ -46,11 +52,16 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerDTO> update(@PathVariable Long id, @Valid  @RequestBody CustomerDTO customerDTO) {
-        CustomerDTO updatedCustomer = customerService.update(id, customerDTO);
-        return ResponseEntity.ok(updatedCustomer);
+    public ResponseEntity<CustomerDTO> update(@PathVariable Long id, @RequestBody CustomerUpdateDTO dto) {
+        Customer customer = customerRepository.findById(id).orElseThrow();
+        customer.setName(dto.name());
+        customer.setEmail(dto.email());
+        customer.setPhone(dto.phone());
+        customer.setAddress(dto.address());
+        customer.setAvatar(dto.avatar());
+        Customer updated = customerRepository.save(customer);
+        return ResponseEntity.ok(customerMapper.toDto(updated));
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         customerService.delete(id);

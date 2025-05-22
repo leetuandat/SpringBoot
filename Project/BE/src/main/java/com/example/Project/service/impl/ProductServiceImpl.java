@@ -88,4 +88,10 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> products = productRepository.findByNameContainingIgnoreCase(keyword, pageable);
         return products.map(productMapper::toDto);
     }
+
+    @Override
+    public Page<ProductDTO> findByCategoryName(String keyword, Pageable pageable) {
+        Page<Product> products = productRepository.findByCategory_NameIgnoreCase(keyword, pageable);
+        return products.map(productMapper::toDto); 
+    }
 }

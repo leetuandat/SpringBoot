@@ -15,4 +15,5 @@ public interface ProductService {
     void delete(Long id);
     List<ProductDTO> findByIds(List<Long> ids);
     Page<ProductDTO> findByProductName(String keyword, Pageable pageable);
+    Page<ProductDTO> findByCategoryName(String keyword, Pageable pageable);
 }

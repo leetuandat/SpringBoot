@@ -34,7 +34,7 @@ public class Customer {
     @Column(length = 50)
     private String username;
 
-    @Column(length = 32)
+    @Column(length = 255)
     private String password;
 
     @Column(length = 500)
@@ -46,7 +46,9 @@ public class Customer {
     @Column(length = 50)
     private String phone;
 
-    @Column(length = 250)
+    private String role;
+
+    @Column(columnDefinition = "LONGTEXT")
     private String avatar;
 
     private LocalDateTime createdDate;

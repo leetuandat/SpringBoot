@@ -19,11 +19,13 @@ public record CustomerDTO(
         String name,
         @NotBlank(message = "Username cannot be blank")
         String username,
+        String password,
         String address,
         @Email(message = "Email is not valid")
         String email,
         String phone,
         String avatar,
-        @NotNull(message = "isActive cannot be null")
-        Boolean isActive
+//        @NotNull(message = "isActive cannot be null")
+        Boolean isActive,
+        String role
 ){}

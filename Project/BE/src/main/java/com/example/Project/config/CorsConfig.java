@@ -7,7 +7,7 @@
  * @package: com.example.Project
  */
 
-package com.example.Project;
+package com.example.Project.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,10 +23,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("*")
+                        .allowedOrigins("http://127.0.0.1:5500")  // URL frontend chính xác
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
-                        .allowCredentials(false);
+                        .allowCredentials(true);  // Cho phép cookie/session gửi đi
             }
         };
     }

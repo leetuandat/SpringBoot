@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/books")
+@RequestMapping("/products")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class ProductController {
 
     private final ProductService productService;
@@ -62,5 +62,10 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<Page<ProductDTO>> findByCategory(@RequestParam String category, Pageable pageable) {
+        return ResponseEntity.ok(productService.findByCategoryName(category, pageable));
     }
 }

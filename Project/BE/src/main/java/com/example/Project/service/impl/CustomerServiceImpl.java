@@ -17,6 +17,7 @@ import com.example.Project.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Page<CustomerDTO> findAll(Pageable pageable) {
@@ -44,6 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO save(CustomerDTO dto) {
         Customer entity = customerMapper.toEntity(dto);
         entity.setIsDelete(false);
+        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         Customer saved = customerRepository.save(entity);
         return customerMapper.toDto(saved);
     }

@@ -11,6 +11,7 @@ import java.util.List;
 public interface ProductMapper {
     @Mapping(source = "author.id", target = "authorId")
     @Mapping(source = "author.name", target = "authorName")
+    @Mapping(source = "category.name", target = "categoryName")
     ProductDTO toDto(Product entity);
 
     @Mapping(target = "author", ignore = true) // set ở service

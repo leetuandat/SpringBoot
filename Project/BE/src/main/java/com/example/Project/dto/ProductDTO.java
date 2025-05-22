@@ -22,6 +22,7 @@ public record ProductDTO(
         String name,
         Long authorId,
         String authorName,
+        String categoryName,
         String description,
         @DecimalMin(value = "0.0", message = "Price cannot be negative")
         BigDecimal price,
