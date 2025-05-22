@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Shop</title>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="/assets/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/icomoon/icomoon.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/vendor.css">
+    <link rel="stylesheet" href="/book-shop.css">
+     <!-- <link rel="stylesheet" href="assets/css/cart.css"> -->
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <section class="product-hero">
+        <div class="container">
+            <div class="product-columns w-row">
+                <div class="product-column1 w-col w-col-6"><img alt="Great travel at desert" loading="lazy"
+                        data-wf-sku-bindings="%5B%7B%22from%22%3A%22f_main_image_4dr%22%2C%22to%22%3A%22src%22%7D%5D"
+                        src="https://cdn.prod.website-files.com/651807d5b52ab1fff79f3d98/6522a8f294ac97f31befd70d_book3%204.png">
+                </div>
+                <div class="product-column2 w-col w-col-6">
+                    <h3 class="book-heading product-heading">Great travel at desert</h3>
+                    <div class="book-author product-b-autor">Sanchit Howdy</div>
+                    <div data-wf-sku-bindings="%5B%7B%22from%22%3A%22f_price_%22%2C%22to%22%3A%22innerHTML%22%7D%5D"
+                        class="book-price product-b-price">$&nbsp;38.00&nbsp;</div>
+                    <div>
+                        <form data-node-type="commerce-add-to-cart-form" data-commerce-sku-id="6522a57e0d5b79c7a0096cc7"
+                            data-loading-text="Adding to cart..." data-commerce-product-id="6522a57c0d5b79c7a0096a01"
+                            class="w-commerce-commerceaddtocartform default-state"><label
+                                for="quantity-c2ce33368ccfc1eba05c13226fdfc4e3"
+                                class="field-label">Quantity:</label><input type="number" pattern="^[0-9]+$"
+                                inputmode="numeric" id="quantity-c2ce33368ccfc1eba05c13226fdfc4e3"
+                                name="commerce-add-to-cart-quantity-input" min="1"
+                                class="w-commerce-commerceaddtocartquantityinput quantity" value="1"><input
+                                type="submit" data-node-type="commerce-add-to-cart-button"
+                                data-loading-text="Adding to cart..." aria-busy="false" aria-haspopup="dialog"
+                                class="w-commerce-commerceaddtocartbutton add-to-cart-btn hero-button atc-btn"
+                                value="Add to Cart"><a data-node-type="commerce-buy-now-button"
+                                data-default-text="Buy now" data-subscription-text="Subscribe now" aria-busy="false"
+                                aria-haspopup="false"
+                                class="w-commerce-commercebuynowbutton by-now-button hero-button bn-btn w-dyn-hide"
+                                href="/checkout">Buy now</a>
+                            <div data-wf-sku-bindings="%5B%7B%22from%22%3A%22f_sku_values_3dr%22%2C%22to%22%3A%22optionValues%22%7D%5D"
+                                data-commerce-product-sku-values="%7B%7D"
+                                data-node-type="commerce-add-to-cart-option-list"
+                                data-commerce-product-id="6522a57c0d5b79c7a0096a01"
+                                data-preselect-default-variant="false" class="option-list" role="group"></div>
+                        </form>
+                        <div style="display:none" class="w-commerce-commerceaddtocartoutofstock" tabindex="0">
+                            <div>This product is out of stock.</div>
+                        </div>
+                        <div aria-live="assertive" data-node-type="commerce-add-to-cart-error" style="display:none"
+                            class="w-commerce-commerceaddtocarterror">
+                            <div data-node-type="commerce-add-to-cart-error"
+                                data-w-add-to-cart-quantity-error="Product is not available in this quantity."
+                                data-w-add-to-cart-general-error="Something went wrong when adding this item to the cart."
+                                data-w-add-to-cart-mixed-cart-error="You can’t purchase another product with a subscription."
+                                data-w-add-to-cart-buy-now-error="Something went wrong when trying to purchase this item."
+                                data-w-add-to-cart-checkout-disabled-error="Checkout is disabled on this site."
+                                data-w-add-to-cart-select-all-options-error="Please select an option in each set.">
+                                Product is not available in this quantity.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <div id="footer-bottom-placeholder"></div>
+
+    <script src="js/jquery-1.11.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+		crossorigin="anonymous"></script>
+	<script src="js/plugins.js"></script>
+	<script src="js/script.js"></script>
+	<script src="assets/js/general.js" type="module"></script>
+</body>
+
+</html>

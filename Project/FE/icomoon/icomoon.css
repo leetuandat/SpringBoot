@@ -31,6 +31,9 @@
 .icon-cancel:before {
   content: "\e904";
 }
+.icon-exit:before {
+  content: "\ea14";
+}
 .icon-arrow-left-circle:before {
   content: "\e902";
 }

@@ -21,15 +21,24 @@
 
   // Responsive Navigation with Button
 
-  const hamburger = document.querySelector(".hamburger");
-  const navMenu = document.querySelector(".menu-list");
+const hamburger = document.querySelector(".hamburger");
+const navMenu = document.querySelector(".menu-list");
 
+function mobileMenu() {
+  hamburger.classList.toggle("active");
+  navMenu.classList.toggle("responsive");
+}
+
+if (hamburger && navMenu) {
   hamburger.addEventListener("click", mobileMenu);
 
-  function mobileMenu() {
-      hamburger.classList.toggle("active");
-      navMenu.classList.toggle("responsive");
-  }
+  const navLinks = document.querySelectorAll(".nav-link");
+  navLinks.forEach(n => n.addEventListener("click", () => {
+    hamburger.classList.remove("active");
+    navMenu.classList.remove("responsive");
+  }));
+}
+
 
   const navLink = document.querySelectorAll(".nav-link");
 
