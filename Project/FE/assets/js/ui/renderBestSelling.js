@@ -19,7 +19,7 @@ export function renderBestSeliing(product) {
                         <p>${product.description || 'No description available.'}</p>
                         <div class="item-price">${product.price.toLocaleString('vi-VN')}₫</div>
                         <div class="btn-wrap">
-                            <a href="#" class="btn-accent-arrow">shop it now <i class="icon icon-ns-arrow-right"></i></a>
+                            <a href="single-product.html?id=${product.id}" class="btn-accent-arrow">shop it now <i class="icon icon-ns-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>

@@ -1,54 +1,60 @@
-/**
- * @author X.e.n.g
- * @version 1.O
- * @project name: Project
- * @date: 4/8/2025
- * @time: 10:52 PM
- * @package: com.example.Project.dto
- */
-
 package com.example.Project.dto;
-
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
-public record OrderDTO(
-        Long id,
+/**
+ * DTO cho đơn hàng, hỗ trợ builder pattern bằng Lombok
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class OrderDTO {
+
+        private Long id;
 
         @NotBlank(message = "orderCode cannot be blank")
-        String orderCode,
+        private String orderCode;
 
-        LocalDateTime orderDate,
+        private LocalDateTime orderDate;
 
         @NotNull(message = "customerId is required")
-        Long customerId,
+        private Long customerId;
 
         @NotNull(message = "paymentId is required")
-        Long paymentId,
+        private Long paymentId;
 
         @NotNull(message = "transportId is required")
-        Long transportId,
+        private Long transportId;
 
         @DecimalMin(value = "0.0", message = "Total money cannot be negative")
-        BigDecimal totalMoney,
+        private BigDecimal totalMoney;
 
-        String notes,
+        private String notes;
 
-        String nameReceiver,
+        private String nameReceiver;
 
-        String address,
+        private String address;
 
         @Email(message = "Email is not valid")
-        String email,
+        private String email;
 
-        String phone,
+        private String phone;
 
         @NotNull(message = "isActive cannot be null")
-        Boolean isActive
-) {}
+        private Boolean isActive;
+
+        private List<OrderDetailDTO> orderDetails;
+        private Integer totalItems;
+}

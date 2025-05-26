@@ -10,5 +10,6 @@ public record CategoryDTO(
         String icon,
         String slug,
         @NotNull(message = "isActive cannot be null")
-        Boolean isActive
+        Boolean isActive,
+        String metaDescription
 ){}

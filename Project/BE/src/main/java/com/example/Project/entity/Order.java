@@ -11,11 +11,12 @@ package com.example.Project.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,7 +29,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "idOrders", length = 10, unique = true, nullable = false)
+    @Column(name = "idOrders", length = 50, unique = true, nullable = false)
     private String idOrders;
 
     private LocalDateTime ordersDate;
@@ -44,6 +45,11 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "idTransport")
     private TransportMethod transportMethod;
+
+    @ManyToOne
+    @JoinColumn(name = "idCoupon")
+    private Coupon coupon;
+
 
     private BigDecimal totalMoney;
 
@@ -67,6 +73,9 @@ public class Order {
 
     @Column(nullable = false)
     private Boolean isActive;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderDetail> orderDetails;
 
     @PrePersist
     protected void onCreate() {

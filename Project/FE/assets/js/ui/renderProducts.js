@@ -20,7 +20,7 @@ export function renderProductsToSlider(products, containerSelector = ".main-slid
           <h2 class="banner-title">${product.name}</h2>
           <p>${product.description || ""}</p>
           <div class="btn-wrap">
-            <a href="#" class="btn btn-outline-accent btn-accent-arrow">
+            <a href="single-product.html?id=${product.id}" class="btn btn-outline-accent btn-accent-arrow">
               Read More <i class="icon icon-ns-arrow-right"></i>
             </a>
           </div>

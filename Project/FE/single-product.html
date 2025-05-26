@@ -14,14 +14,111 @@
 
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0">
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+		integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+	<link rel="stylesheet" type="text/css"
+		href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
 	<link rel="stylesheet" type="text/css" href="/assets/css/normalize.css">
 	<link rel="stylesheet" type="text/css" href="icomoon/icomoon.css">
 	<link rel="stylesheet" type="text/css" href="/assets/css/vendor.css">
 	<link rel="stylesheet" type="text/css" href="style.css">
-	<link rel="stylesheet" type="text/css" href="/assets/css/cart.css">
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/cart.css"> -->
 
 </head>
+
+<style>
+	#nav-review {
+		background-color: var(--light-color);
+		padding: 20px;
+		border-radius: 12px;
+	}
+
+	#review-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+	}
+
+	.review-item {
+		background-color: transparent;
+		border: none;
+		border-bottom: 1px solid #ddd;
+		padding: 15px 0;
+	}
+
+	.review-item:hover {
+		box-shadow: none;
+	}
+
+	.review-item>.row {
+		display: flex;
+		align-items: flex-start;
+		gap: 20px;
+	}
+
+	.review-item .image-holder img {
+		width: 80px;
+		height: 80px;
+		object-fit: cover;
+		border-radius: 50%;
+		border: none;
+		box-shadow: none;
+	}
+
+	.review-content {
+		flex: 1;
+	}
+
+	.review-content .rating-container {
+		gap: 4px;
+		margin-bottom: 8px;
+	}
+
+	.review-header .author-name {
+		font-weight: 600;
+		font-size: 1.1rem;
+		color: #333;
+	}
+
+	.review-header .review-date {
+		margin-left: 12px;
+		font-size: 0.875rem;
+		color: #777;
+	}
+
+	.review-content p {
+		margin-top: 6px;
+		font-size: 1rem;
+		line-height: 1.5;
+		color: #444;
+	}
+
+	@media (max-width: 576px) {
+		#nav-review {
+			padding: 10px;
+		}
+
+		.review-item>.row {
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+		}
+
+		.review-item .image-holder {
+			margin-bottom: 12px;
+		}
+
+		.review-header .review-date {
+			display: block;
+			margin-left: 0;
+			margin-top: 4px;
+		}
+	}
+</style>
 
 <body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
 
@@ -167,43 +264,25 @@
 					<div class="product-detail">
 						<span id="product-category">Fiction</span>
 						<h1 id="product-name">Birds Gonna Be Happy</h1>
-						<div class="rating-container d-flex align-items-center text-warning mb-4">
-							<svg width="32" height="32">
-								<use xlink:href="#star-solid"></use>
-							</svg>
-							<svg width="32" height="32">
-								<use xlink:href="#star-solid"></use>
-							</svg>
-							<svg width="32" height="32">
-								<use xlink:href="#star-solid"></use>
-							</svg>
-							<svg width="32" height="32">
-								<use xlink:href="#star-outline"></use>
-							</svg>
-							<svg width="32" height="32">
-								<use xlink:href="#star-outline"></use>
-							</svg>
+						<!-- Chỗ bạn muốn hiển thị điểm trung bình và tổng lượt đánh giá -->
+						<div id="average-rating" class="text-warning d-flex align-items-center gap-2"
+							style="font-size: 1rem; font-weight: 600; color: #333;">
+							<span id="avg-rating-value" style="color: #f6b01e;">0.0</span>
+							<div id="avg-rating-stars" class="d-flex" style="border-right: 1px solid #777;"></div>
+							<span id="total-reviews" style="color: #777;">0 Đánh Giá</span>
 						</div>
 
-						<p>
-							Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-							consequat.
-						</p>
-						<p>
-							Duis aute irure dolor in reprehenderit in voluptate velit esse
-							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-						</p>
+
+						<span id="product-meta-description"></span>
 
 						<p><span class="price colored fs-4">$45.00</span></p>
 
 						<div class="d-flex gap-3">
 							<input type="number" name="age" id="age" class="m-0 text-center" min="1" max="12" step="1"
 								value="1">
-							<button type="submit" name="add-to-cart" value="27545" class="button m-0">Add to
-								cart</button>
+							<button type="submit" name="add-to-cart" value="27545" class="button m-0"
+								id="btn-add-to-cart">Add to cart</button>
+
 						</div>
 
 
@@ -222,162 +301,101 @@
 						<div class="nav nav-tabs d-flex justify-content-center" id="nav-tab" role="tablist">
 							<button class="nav-link active text-uppercase px-5 py-3" id="nav-home-tab"
 								data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab"
-								aria-controls="nav-home" aria-selected="true">Description</button>
+								aria-controls="nav-home" aria-selected="true">Mô tả</button>
 							<button class="nav-link text-uppercase px-5 py-3" id="nav-information-tab"
 								data-bs-toggle="tab" data-bs-target="#nav-information" type="button" role="tab"
-								aria-controls="nav-information" aria-selected="false">Additional information</button>
+								aria-controls="nav-information" aria-selected="false">Thông tin bổ sung</button>
 							<button class="nav-link text-uppercase px-5 py-3" id="nav-shipping-tab" data-bs-toggle="tab"
 								data-bs-target="#nav-shipping" type="button" role="tab" aria-controls="nav-shipping"
-								aria-selected="false">Shipping & Return</button>
+								aria-selected="false">Vận Chuyển & Đổi trả</button>
 							<button class="nav-link text-uppercase px-5 py-3" id="nav-review-tab" data-bs-toggle="tab"
 								data-bs-target="#nav-review" type="button" role="tab" aria-controls="nav-review"
-								aria-selected="false">Reviews</button>
+								aria-selected="false">Đánh giá</button>
 						</div>
 					</nav>
 					<div class="tab-content py-5" id="nav-tabContent">
 						<div class="tab-pane fade show active" id="nav-home" role="tabpanel"
 							aria-labelledby="nav-home-tab">
-							<h5>Product Description</h5>
-							<p id="product-long-description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-								Donec odio. Quisque volutpat
-								mattis eros.
-								Nullam malesuada erat ut turpis. Suspendisse urna viverra non, semper suscipit, posuere
-								a, pede. Donec
-								nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean
-								dignissim
-								pellentesque felis. Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec
-								consectetuer ligula
-								vulputate sem tristique cursus.
-							<ul>
-								<li>Donec nec justo eget felis facilisis fermentum.</li>
-								<li>Suspendisse urna viverra non, semper suscipit pede.</li>
-								<li>Aliquam porttitor mauris sit amet orci.</li>
-							</ul> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat
-							mattis
-							eros. Nullam malesuada erat ut turpis. Suspendisse urna viverra non, semper suscipit,
-							posuere a, pede.
-							Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci.
-							Aenean dignissim
-							pellentesque felis. Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer
-							ligula
-							vulputate sem tristique cursus. </p>
+							<h2>Mô tả sản phẩm</h2>
+							<p id="product-long-description"></p>
+							<div id="product-contents"></div>
 						</div>
 						<div class="tab-pane fade" id="nav-information" role="tabpanel"
 							aria-labelledby="nav-information-tab">
-							<h5>It is Comfortable and Best</h5>
-							<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-								nulla
-								pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-								deserunt mollit
-								anim id est laborum. Duis aute irure dolor in reprehenderit in voluptate velit esse
-								cillum dolore eu
-								fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-								officia
-								deserunt mollit anim id est laborum.</p>
+							<h2>Thông tin sản phẩm</h2>
+							<ul class="list-unstyled">
+								<li><strong>Danh mục:</strong> <span id="product-category-info"></span></li>
+								<li><strong>Tác giả:</strong> <span id="product-author"></span></li>
+								<li><strong>Giá:</strong> <span id="product-price"></span></li>
+								<li><strong>Số lượng còn:</strong> <span id="product-stock"></span></li>
+								<li><strong>Slug:</strong> <span id="product-slug"></span></li>
+								<li><strong>Ngày tạo:</strong> <span id="product-created-date"></span></li>
+								<li><strong>Ngày cập nhật:</strong> <span id="product-updated-date"></span></li>
+								<li><strong>Ghi chú:</strong> <span id="product-notes"></span></li>
+								<!-- nếu cần meta SEO -->
+								<li><strong>Meta title:</strong> <span id="product-meta-title"></span></li>
+								<li><strong>Meta keywords:</strong> <span id="product-meta-keyword"></span></li>
+							</ul>
 						</div>
 						<div class="tab-pane fade" id="nav-shipping" role="tabpanel" aria-labelledby="nav-shipping-tab">
-							<h5>Returns Policy</h5>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eros justo, accumsan non
-								dui sit amet.
-								Phasellus semper volutpat mi sed imperdiet. Ut odio lectus, vulputate non ex non, mattis
-								sollicitudin
-								purus. Mauris consequat justo a enim interdum, in consequat dolor accumsan. Nulla
-								iaculis diam purus,
-								ut vehicula leo efficitur at.</p>
-							<p>Interdum et malesuada fames ac ante ipsum primis in faucibus. In blandit nunc enim, sit
-								amet pharetra
-								erat aliquet ac.</p>
-							<h5>Shipping</h5>
-							<p>Pellentesque ultrices ut sem sit amet lacinia. Sed nisi dui, ultrices ut turpis pulvinar.
-								Sed
-								fringilla ex eget lorem consectetur, consectetur blandit lacus varius. Duis vel
-								scelerisque elit, et
-								vestibulum metus. Integer sit amet tincidunt tortor. Ut lacinia ullamcorper massa, a
-								fermentum arcu
-								vehicula ut. Ut efficitur faucibus dui Nullam tristique dolor eget turpis consequat
-								varius. Quisque a
-								interdum augue. Nam ut nibh mauris.</p>
+							<h2>Vận chuyển</h2>
+							<ul>
+								<li>Giao hàng toàn quốc qua các đơn vị uy tín (GHN, Viettel Post…).</li>
+								<li>Thời gian giao hàng: 1–5 ngày làm việc tùy khu vực.</li>
+								<li>Miễn phí giao hàng với đơn từ 300.000đ. Dưới mức này, phí vận chuyển tính theo đơn
+									vị
+									giao hàng.</li>
+							</ul>
+							<h2>Đổi trả</h2>
+							<ul>
+								<li>Hỗ trợ đổi trả trong 7 ngày nếu: sách bị lỗi in, rách, sai nội dung, sai sản phẩm.
+								</li>
+								<li>Không áp dụng đổi trả với sách đã sử dụng, hư hại do người dùng hoặc sản phẩm giảm
+									giá
+									đặc biệt.</li>
+								<li>Nếu lỗi từ cửa hàng: miễn phí đổi trả. Nếu do khách hàng: tự thanh toán phí vận
+									chuyển.
+								</li>
+								<li>Liên hệ đổi trả qua email hoặc hotline để được hướng dẫn chi tiết.</li>
+							</ul>
 						</div>
 						<div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab">
-							<div class="review-box review-style1 d-flex">
-								<div class="review-item d-flex">
-									<div class="row g-4">
-										<div class="col-md-3">
-											<div class="image-holder">
-												<img src="images/review-image1.jpg" alt="review"
-													class="rounded-circle img-fluid">
-											</div>
-										</div>
-										<div class="col-md-7">
-											<div class="review-content">
-												<div class="rating-container text-warning d-flex align-items-center">
-													<svg width="32" height="32">
-														<use xlink:href="#star-solid"></use>
-													</svg>
-													<svg width="32" height="32">
-														<use xlink:href="#star-solid"></use>
-													</svg>
-													<svg width="32" height="32">
-														<use xlink:href="#star-solid"></use>
-													</svg>
-													<svg width="32" height="32">
-														<use xlink:href="#star-outline"></use>
-													</svg>
-													<svg width="32" height="32">
-														<use xlink:href="#star-outline"></use>
-													</svg>
-												</div>
-												<div class="review-header">
-													<span class="author-name">Tom Johnson</span>
-													<span class="review-date">– 07/05/2022</span>
-												</div>
-												<p>Vitae tortor condimentum lacinia quis vel eros donec ac. Nam at
-													lectus urna duis convallis
-													convallis</p>
-											</div>
-										</div>
-									</div>
+							<!-- Hiển thị đánh giá -->
+							<div id="review-list" class="review-box review-style1 d-flex flex-column gap-4"></div>
+
+							<!-- Form gửi đánh giá -->
+							<form id="review-form" class="mt-4 p-4 border rounded bg-light">
+								<div class="mb-3">
+									<label class="form-label fw-bold">Viết đánh giá của bạn</label>
+									<textarea name="comment" class="form-control" rows="3" required></textarea>
 								</div>
-								<div class="review-item d-flex">
-									<div class="row g-4">
-										<div class="col-md-3">
-											<div class="image-holder">
-												<img src="images/review-image2.jpg" alt="review"
-													class="rounded-circle img-fluid">
-											</div>
-										</div>
-										<div class="col-md-7">
-											<div class="review-content">
-												<div class="rating-container text-warning d-flex align-items-center">
-													<svg width="32" height="32">
-														<use xlink:href="#star-solid"></use>
-													</svg>
-													<svg width="32" height="32">
-														<use xlink:href="#star-solid"></use>
-													</svg>
-													<svg width="32" height="32">
-														<use xlink:href="#star-solid"></use>
-													</svg>
-													<svg width="32" height="32">
-														<use xlink:href="#star-outline"></use>
-													</svg>
-													<svg width="32" height="32">
-														<use xlink:href="#star-outline"></use>
-													</svg>
-												</div>
-												<div class="review-header">
-													<span class="author-name">Jenny Willis</span>
-													<span class="review-date">– 07/05/2022</span>
-												</div>
-												<p>Vitae tortor condimentum lacinia quis vel eros donec ac. Nam at
-													lectus urna duis convallis
-													convallis</p>
-											</div>
-										</div>
+								<div class="mb-3">
+									<label class="form-label fw-bold">Đánh giá sao</label>
+									<div id="star-rating" class="d-flex gap-2">
+										<svg data-value="1" width="32" height="32" class="star">
+											<use xlink:href="#star-outline"></use>
+										</svg>
+										<svg data-value="2" width="32" height="32" class="star">
+											<use xlink:href="#star-outline"></use>
+										</svg>
+										<svg data-value="3" width="32" height="32" class="star">
+											<use xlink:href="#star-outline"></use>
+										</svg>
+										<svg data-value="4" width="32" height="32" class="star">
+											<use xlink:href="#star-outline"></use>
+										</svg>
+										<svg data-value="5" width="32" height="32" class="star">
+											<use xlink:href="#star-outline"></use>
+										</svg>
 									</div>
+
+									<input type="hidden" name="rating" required>
 								</div>
-							</div>
+								<button type="submit" class="btn btn-warning" style="width: fit-content;">Gửi đánh
+									giá</button>
+							</form>
 						</div>
+
 					</div>
 				</div>
 			</div>
@@ -398,80 +416,17 @@
 			<div class="row">
 				<div class="inner-content">
 					<div class="product-list" data-aos="fade-up">
-						<div class="grid product-grid">
-							<div class="product-item">
-								<figure class="product-style">
-									<img src="images/product-item5.jpg" alt="Books" class="product-item">
-									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-										Cart</button>
-								</figure>
-								<figcaption>
-									<h3>Simple way of piece life</h3>
-									<span>Armor Ramsey</span>
-									<div class="item-price">
-										<span class="prev-price">$ 50.00</span>$ 40.00
-									</div>
-							</div>
-							</figcaption>
+						<button class="prev slick-arrow">
+							<i class="icon icon-arrow-left"></i>
+						</button>
+						<div class="grid product-grid" id="related-offer-list">
 
-							<div class="product-item">
-								<figure class="product-style">
-									<img src="images/product-item6.jpg" alt="Books" class="product-item">
-									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-										Cart</button>
-								</figure>
-								<figcaption>
-									<h3>Great travel at desert</h3>
-									<span>Sanchit Howdy</span>
-									<div class="item-price">
-										<span class="prev-price">$ 30.00</span>$ 38.00
-									</div>
-							</div>
-							</figcaption>
 
-							<div class="product-item">
-								<figure class="product-style">
-									<img src="images/product-item7.jpg" alt="Books" class="product-item">
-									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-										Cart</button>
-								</figure>
-								<figcaption>
-									<h3>The lady beauty Scarlett</h3>
-									<span>Arthur Doyle</span>
-									<div class="item-price">
-										<span class="prev-price">$ 35.00</span>$ 45.00
-									</div>
-							</div>
-							</figcaption>
 
-							<div class="product-item">
-								<figure class="product-style">
-									<img src="images/product-item8.jpg" alt="Books" class="product-item">
-									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-										Cart</button>
-								</figure>
-								<figcaption>
-									<h3>Once upon a time</h3>
-									<span>Klien Marry</span>
-									<div class="item-price">
-										<span class="prev-price">$ 25.00</span>$ 35.00
-									</div>
-							</div>
-							</figcaption>
-
-							<div class="product-item">
-								<figure class="product-style">
-									<img src="images/product-item2.jpg" alt="Books" class="product-item">
-									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to
-										Cart</button>
-								</figure>
-								<figcaption>
-									<h3>Simple way of piece life</h3>
-									<span>Armor Ramsey</span>
-									<div class="item-price">$ 40.00</div>
-								</figcaption>
-							</div>
 						</div><!--grid-->
+						<button class="next slick-arrow">
+							<i class="icon icon-arrow-right"></i>
+						</button>
 					</div>
 				</div><!--inner-content-->
 			</div>
@@ -482,6 +437,7 @@
 	<div id="footer-bottom-placeholder"></div>
 
 	<script src="js/jquery-1.11.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
 		crossorigin="anonymous"></script>
@@ -489,30 +445,143 @@
 	<script src="js/script.js"></script>
 	<script type="module" src="assets/js/general.js"></script>
 
-	<script>
-		const params = new URLSearchParams(window.location.search);
-		const id = params.get("id");
+	<script type="module">
+		import { fetchProducts } from './assets/js/api/productsApi.js';
 
-		fetch(`http://localhost:8080/products/${id}`)
-			.then(response => {
-				if (!response.ok) throw new Error("Không tìm thấy sản phẩm");
-				return response.json();
-			})
-			.then(product => {
+
+		// Tự định nghĩa trong cùng file
+		function renderSpecialOfferByCategory(products = [], categoryName = "", currentProductId = null) {
+			const container = document.getElementById("related-offer-list");
+			if (!container || !Array.isArray(products) || !categoryName) return;
+
+			// Nếu slick đã init trước đó, huỷ bỏ
+			if ($(container).hasClass("slick-initialized")) {
+				$(container).slick("unslick");
+			}
+
+			container.innerHTML = "";
+
+			// Lọc sản phẩm liên quan
+			const filtered = products.filter(p => p.categoryName === categoryName && p.id !== currentProductId);
+
+			// Vẽ từng sản phẩm
+			filtered.forEach(product => {
+				const item = document.createElement("div");
+				item.className = "product-item";
+
+				item.innerHTML = `
+			<figure class="product-style">
+				<img src="${product.image || 'images/default.jpg'}" alt="${product.name}" class="product-item">
+				<button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+			</figure>
+			<figcaption>
+				<h3>${product.name}</h3>
+				<span>${product.authorName || "Unknown Author"}</span>
+				<div class="item-price">
+					${product.price.toLocaleString("vi-VN")}₫
+				</div>
+			</figcaption>
+		`;
+
+				// Gắn sự kiện
+				item.querySelector(".add-to-cart").addEventListener("click", () => {
+					window.location.href = `/single-product.html?id=${product.id}`;
+				});
+
+				container.appendChild(item);
+			});
+
+			// Kích hoạt slick carousel
+			$(container).slick({
+				slidesToShow: 4,
+				slidesToScroll: 1,
+				arrows: true,
+				prevArrow: $('.prev'),
+				nextArrow: $('.next'),
+				dots: false,
+				infinite: true,
+				responsive: [
+					{
+						breakpoint: 992,
+						settings: { slidesToShow: 2 }
+					},
+					{
+						breakpoint: 576,
+						settings: { slidesToShow: 1 }
+					}
+				]
+			});
+		}
+
+
+		const API = 'http://127.0.0.1:8080';
+		const params = new URLSearchParams(window.location.search);
+		const id = parseInt(params.get("id"), 10);
+		function isLoggedIn() {
+			return !!sessionStorage.getItem('user');
+		}
+
+		document.addEventListener('DOMContentLoaded', () => {
+			const btn = document.getElementById('btn-add-to-cart');
+			btn.addEventListener('click', async e => {
+				e.preventDefault();
+
+				// Nếu chưa login => hiện popup & thoát
+				if (!isLoggedIn()) {
+					alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.');
+					// Hàm này đã được định nghĩa trong script review của bạn
+					showLoginPopup();
+					return;
+				}
+				const qty = parseInt(document.getElementById('age').value, 10) || 1;
+				try {
+					const res = await fetch(`${API}/cart/items`, {
+						method: 'POST',
+						credentials: 'include',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ productId: id, quantity: qty })
+					});
+					if (!res.ok) throw new Error(`HTTP ${res.status}`);
+					alert('✅ Đã thêm vào giỏ hàng!');
+					window.dispatchEvent(new CustomEvent('cartUpdated'));
+				} catch (err) {
+					console.error(err);
+					alert('❌ Thêm thất bại, thử lại sau.');
+				}
+			});
+		});
+		let currentCategory = "";
+		let currentProductId = null;
+
+		fetch(`http://127.0.0.1:8080/products/${id}`)
+			.then(res => res.json())
+			.then(async (product) => {
 				document.getElementById("product-name").textContent = product.name;
 				document.getElementById("product-image").src = product.image;
 				document.getElementById("product-image").alt = product.name;
-
-				// Nếu có thẻ <p id="product-description"> thì mới set
-				const shortDescEl = document.getElementById("product-description");
-				if (shortDescEl) {
-					shortDescEl.textContent = product.description || "Chưa có mô tả ngắn";
-				}
-
-				// Sửa lại nội dung dài
-				document.getElementById("product-long-description").textContent = product.description || "Chưa có mô tả chi tiết";
+				document.getElementById("product-long-description").innerHTML = product.description;
 				document.querySelector(".price").textContent = `${product.price.toLocaleString('vi-VN')}₫`;
-				document.getElementById("product-category").textContent = product.categoryName || "Uncategorized";
+				document.getElementById("product-category-info").textContent = product.categoryName;
+
+
+				document.getElementById("product-contents").innerHTML = product.contents;
+				document.getElementById("product-author").textContent = product.authorName;
+				document.getElementById("product-price").textContent = product.price.toLocaleString('vi-VN') + ' ₫';
+				document.getElementById("product-stock").textContent = product.quantity;
+				document.getElementById("product-slug").textContent = product.slug;
+				console.log(product);
+				document.getElementById("product-created-date").textContent = new Date(product.createdDate).toLocaleDateString('vi-VN');
+				document.getElementById("product-updated-date").textContent = new Date(product.updatedDate).toLocaleDateString('vi-VN');
+				document.getElementById("product-notes").textContent = product.notes;
+				document.getElementById("product-meta-title").textContent = product.metaTitle;
+				document.getElementById("product-meta-keyword").textContent = product.metaKeyword;
+				document.getElementById("product-meta-description").textContent = product.metaDescription;
+
+				currentCategory = product.categoryName;
+				currentProductId = product.id;
+
+				const allProducts = await fetchProducts();
+				renderSpecialOfferByCategory(allProducts, currentCategory, currentProductId);
 			})
 			.catch(err => {
 				console.error(err);
@@ -520,6 +589,383 @@
 			});
 	</script>
 
+	<script>
+		const productId = new URLSearchParams(window.location.search).get("id");
+
+		function formatCount(num) {
+			if (num >= 1000) {
+				return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+			}
+			return num.toString();
+		}
+
+		function renderStars(rating) {
+			let html = '';
+			const fullStars = Math.floor(rating);
+			const halfStar = (rating - fullStars) >= 0.5;
+
+			for (let i = 1; i <= 5; i++) {
+				if (i <= fullStars) {
+					html += `<svg width="20" height="20"><use xlink:href="#star-solid"></use></svg>`;
+				} else if (i === fullStars + 1 && halfStar) {
+					// Tạm dùng star-outline cho half-star, bạn có thể thêm icon riêng
+					html += `<svg width="20" height="20"><use xlink:href="#star-outline"></use></svg>`;
+				} else {
+					html += `<svg width="20" height="20"><use xlink:href="#star-outline"></use></svg>`;
+				}
+			}
+			return html;
+		}
+
+		function updateAverageRatingUI(avgRating, totalReviews) {
+			document.getElementById('avg-rating-value').textContent = avgRating.toFixed(1);
+			document.getElementById('avg-rating-stars').innerHTML = renderStars(avgRating);
+			document.getElementById('total-reviews').textContent = `${formatCount(totalReviews)} Đánh Giá`;
+		}
+		let currentUserReview = null; // Lưu đánh giá của user hiện tại (nếu có)
+
+		async function loadReviews() {
+			const res = await fetch(`http://127.0.0.1:8080/reviews/${productId}`);
+			const reviews = await res.json();
+
+			const container = document.getElementById("review-list");
+			container.innerHTML = '';
+
+			if (reviews.length === 0) {
+				updateAverageRating(0);
+				return;
+			}
+
+			// Tính trung bình rating
+			const avgRating = reviews.length ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) : 0;
+			const totalReviews = reviews.length;
+
+			updateAverageRatingUI(avgRating, totalReviews);
+
+			// Lấy user hiện tại
+			const userStr = sessionStorage.getItem("user");
+			const currentUser = userStr ? JSON.parse(userStr) : null;
+
+			currentUserReview = null; // reset mỗi lần load
+
+			reviews.forEach(r => {
+				// Hiển thị review
+				const div = document.createElement("div");
+				div.className = "review-item d-flex";
+				// Format ngày giờ đầy đủ (ngày tháng năm + giờ phút)
+				const dateObj = new Date(r.createdAt);
+				const formattedDate = dateObj.toLocaleDateString('vi-VN') + ' ' + dateObj.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+				div.innerHTML = `
+      <div class="image-holder">
+        <img src="${r.customerAvatar || 'images/default.jpg'}" alt="avatar" class="rounded-circle img-fluid" />
+      </div>
+      <div class="review-content flex-grow-1 ms-3">
+        <div class="review-header d-flex align-items-center gap-2">
+          <span class="author-name">${r.customerName}</span>
+          <span class="review-date">– ${formattedDate}</span>
+        </div>
+        <div class="rating-container text-warning d-flex mb-2">
+          ${renderStars(r.rating)}
+        </div>
+        <p>${r.comment}</p>
+        ${r.media && r.media.length ? `
+          <div class="review-media d-flex gap-2 mt-2">
+            ${r.media.map(m => `<img src="${m}" alt="media" class="review-media-item" />`).join('')}
+          </div>` : ''}
+      </div>
+      <div class="review-actions d-flex flex-column justify-content-between ms-3">
+      </div>
+    `;
+
+				container.appendChild(div);
+
+				// Kiểm tra xem đây có phải review của user hiện tại ko để load vào form sửa
+				if (currentUser && r.customerName === currentUser.name) {
+					currentUserReview = r;
+				}
+			});
+
+			if (currentUserReview) {
+				// Load dữ liệu review của user hiện tại vào form để sửa
+				const form = document.getElementById("review-form");
+				form.comment.value = currentUserReview.comment;
+
+				// Cập nhật sao đánh giá hiển thị trong form
+				const stars = form.querySelectorAll("#star-rating .star");
+				stars.forEach((star, i) => {
+					star.querySelector("use").setAttribute("xlink:href", i < currentUserReview.rating ? "#star-solid" : "#star-outline");
+					if (i < currentUserReview.rating) {
+						star.classList.add("text-warning");
+					} else {
+						star.classList.remove("text-warning");
+					}
+				});
+				form.rating.value = currentUserReview.rating;
+
+				// Không tạo nút hủy chỉnh sửa nữa
+			} else {
+				// Nếu chưa có review user thì reset form, ẩn nút Hủy sửa (nút đã không tạo rồi nên chỉ reset)
+				const form = document.getElementById("review-form");
+				form.reset();
+				form.querySelectorAll("#star-rating .star use").forEach(use => use.setAttribute("xlink:href", "#star-outline"));
+				form.rating.value = "";
+				// Không cần xoá nút hủy vì không tạo nữa
+			}
+		}
+
+		// Kiểm tra đăng nhập
+		function isLoggedIn() {
+			return !!sessionStorage.getItem("user");
+		}
+
+		// Hiển thị popup đăng nhập
+		function showLoginPopup() {
+			document.body.classList.add("show-popup");
+			const authPopup = document.getElementById("auth-popup");
+			if (authPopup) authPopup.classList.remove("show-signup");
+		}
+
+		document.addEventListener("userLoggedIn", () => {
+			document.body.classList.remove("show-popup");
+			loadReviews();
+		});
+
+		// Xử lý gửi form đánh giá (tạo hoặc cập nhật)
+		document.getElementById("review-form").addEventListener("submit", async e => {
+			e.preventDefault();
+
+			if (!isLoggedIn()) {
+				alert("Vui lòng đăng nhập để gửi đánh giá.");
+				showLoginPopup();
+				return;
+			}
+
+			const form = e.target;
+			const rating = form.rating.value;
+			const comment = form.comment.value;
+
+			try {
+				const res = await fetch("http://127.0.0.1:8080/reviews", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					credentials: "include",
+					body: JSON.stringify({ productId, rating, comment }),
+				});
+
+				if (res.ok) {
+					// alert(currentUserReview ? "Cập nhật đánh giá thành công!" : "Gửi đánh giá thành công!");
+					loadReviews();
+				} else {
+					alert("Lỗi khi gửi đánh giá");
+				}
+			} catch (error) {
+				alert("Lỗi kết nối đến server.");
+			}
+		});
+
+		// Xử lý chọn sao
+		document.querySelectorAll("#star-rating .star").forEach((star, i, stars) => {
+			star.addEventListener("click", () => {
+				stars.forEach((s, idx) => {
+					s.querySelector("use").setAttribute("xlink:href", idx <= i ? "#star-solid" : "#star-outline");
+					if (idx <= i) {
+						s.classList.add("text-warning");
+					} else {
+						s.classList.remove("text-warning");
+					}
+				});
+				document.querySelector("input[name='rating']").value = i + 1;
+			});
+		});
+
+		// Load review lần đầu
+		loadReviews();
+
+	</script>
+
+	<script>function updateAverageRating(avg) {
+			const container = document.querySelector(".rating-container");
+			if (!container) return;
+
+			container.innerHTML = ''; // Xoá sao cũ
+
+			const fullStars = Math.floor(avg);
+			const halfStar = (avg - fullStars) >= 0.5; // có thể làm nửa sao nếu muốn
+
+			for (let i = 1; i <= 5; i++) {
+				const starSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+				starSvg.setAttribute("width", "32");
+				starSvg.setAttribute("height", "32");
+
+				const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+
+				if (i <= fullStars) {
+					use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#star-solid");
+				} else if (i === fullStars + 1 && halfStar) {
+					// Nếu bạn có icon nửa sao, dùng icon đó, còn không thì dùng star-outline cho đơn giản
+					use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#star-outline");
+				} else {
+					use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#star-outline");
+				}
+
+				starSvg.appendChild(use);
+				container.appendChild(starSvg);
+			}
+		}
+	</script>
+
+
+
+
+
+
+	<style>
+		#review-list {
+			background-color: var(--light-color);
+			padding: 20px;
+			border-radius: 12px;
+		}
+
+		.review-item {
+			padding: 15px 10px;
+			border-bottom: 1px solid #ddd;
+			gap: 15px;
+		}
+
+		.review-item:last-child {
+			border-bottom: none;
+		}
+
+		.image-holder img {
+			width: 60px;
+			height: 60px;
+			object-fit: cover;
+			border-radius: 50%;
+			border: none !important;
+			box-shadow: none !important;
+		}
+
+		.review-content {
+			flex-grow: 1;
+		}
+
+		.review-header .author-name {
+			font-weight: 600;
+			font-size: 1.1rem;
+			color: #333;
+		}
+
+		.review-header .review-date {
+			font-size: 0.85rem;
+			color: #777;
+		}
+
+		.rating-container svg.star {
+			margin-right: 4px;
+			fill: #f6b01e;
+		}
+
+		.review-content p {
+			margin-top: 4px;
+			font-size: 1rem;
+			color: #444;
+		}
+
+		.review-media img.review-media-item {
+			max-width: 80px;
+			max-height: 80px;
+			border-radius: 6px;
+			object-fit: cover;
+		}
+
+		.review-actions {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.btn-like,
+		.btn-report {
+			background: none;
+			border: none;
+			cursor: pointer;
+			color: #666;
+			font-size: 0.85rem;
+			padding: 0;
+		}
+
+		.btn-like svg {
+			transition: fill 0.3s ease;
+		}
+
+		.btn-like:hover svg {
+			fill: #f6b01e;
+		}
+
+		.btn-report:hover {
+			color: #f00;
+		}
+
+		@media (max-width: 576px) {
+			.review-item {
+				flex-direction: column !important;
+				align-items: center;
+				text-align: center;
+			}
+
+			.review-content {
+				margin-left: 0 !important;
+			}
+
+			.review-actions {
+				flex-direction: row;
+				gap: 10px;
+				margin-top: 10px;
+			}
+		}
+	</style>
+
+	<style>
+		.padding-medium .product-image img {
+			width: 350px;
+		}
+
+		.slick-arrow {
+			background-color: transparent;
+			border-radius: 50%;
+			border: none;
+			cursor: pointer;
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			z-index: 10;
+			border: 1px solid #8c8c8c;
+			margin: 0;
+			padding: 15px 22px;
+		}
+
+		.prev {
+			top: 35%;
+			left: -100px;
+		}
+
+		.next {
+			top: 35%;
+			right: -100px;
+		}
+
+		.slick-arrow i {
+			font-size: 16px;
+			color: #8c8c8c;
+			transition: color 0.3s;
+		}
+
+		.slick-arrow:hover i {
+			color: #000;
+		}
+	</style>
 
 </body>
 

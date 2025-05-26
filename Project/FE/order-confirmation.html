@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Xác nhận đặt hàng</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Giữ nguyên phần style như bạn gửi ở trên, hoặc copy lại */
+    body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .success-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #2d5a4e, #3d6b5e); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; position: relative;}
+    .success-icon::before { content: '✓'; color: #ffd700; font-size: 32px; font-weight: bold;}
+    .order-header { background: linear-gradient(135deg, #2d5a4e, #3d6b5e); color: white; border-radius: 12px 12px 0 0; padding: 25px;}
+    .order-content { background: white; border-radius: 0 0 12px 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);}
+    .product-item { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #eee;}
+    .product-item:last-child { border-bottom: none;}
+    .product-image { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; margin-right: 15px;}
+    .product-details { flex: 1; }
+    .product-name { font-weight: 600; margin-bottom: 5px; color: #333;}
+    .product-qty { color: #666; font-size: 14px;}
+    .product-price { font-weight: 700; font-size: 18px; color: #333; text-align: right;}
+    .info-section { padding: 25px; background: white;}
+    .info-title { font-weight: 600; margin-bottom: 8px; color: #333;}
+    .cost-breakdown { border-top: 1px solid #eee; padding-top: 20px;}
+    .cost-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px;}
+    .cost-row.total { font-weight: 700; font-size: 18px; padding-top: 10px; border-top: 2px solid #eee; margin-top: 15px;}
+    .btn-custom { border-radius: 25px; padding: 12px 25px; font-weight: 600; text-decoration: none; display: inline-block; transition: all 0.3s ease;}
+    .btn-primary-custom { background: linear-gradient(135deg, #ffd700, #ffed4e); color: #333; border: none;}
+    .btn-primary-custom:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);}
+    .btn-outline-custom { background: white; color: #333; border: 2px solid #ddd;}
+    .btn-outline-custom:hover { background: #f8f9fa; transform: translateY(-2px);}
+    .container-custom { max-width: 900px;}
+    .contact-info a { color: #2d5a4e; text-decoration: none;}
+    .contact-info a:hover { text-decoration: underline;}
+  </style>
+</head>
+<body>
+  <div class="container container-custom py-5">
+    <!-- Success Message -->
+    <div class="text-center mb-5">
+      <div class="success-icon"></div>
+      <h2 class="mb-3">Cảm ơn bạn đã đặt hàng!</h2>
+      <a href="/index.html" class="btn-custom btn-outline-custom">Tiếp tục mua sắm</a>
+    </div>
+
+    <!-- Order Details Card -->
+    <div class="mb-4">
+      <div class="order-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+          <div>
+            <div class="h5 mb-1">Mã đơn hàng : <span id="order-id"></span></div>
+            <div class="small">Ngày đặt : <span id="order-date"></span></div>
+          </div>
+          <div class="text-end">
+            <div class="small text-warning mb-2">Dự kiến giao hàng : <span id="delivery-date"></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="order-content" id="product-list"></div>
+    </div>
+
+    <!-- Information Sections -->
+    <div class="row">
+      <!-- Payment & Address Info -->
+      <div class="col-lg-8">
+        <div class="row">
+          <div class="col-md-4 mb-4">
+            <div class="info-section h-100">
+              <div class="info-title">Phương thức thanh toán</div>
+              <div>Thanh toán khi nhận hàng (COD)</div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-4">
+            <div class="info-section h-100">
+              <div class="info-title">Địa chỉ nhận hàng</div>
+              <div class="text-muted" id="shipping-address"></div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-4">
+            <div class="info-section h-100">
+              <div class="info-title">Cách vận chuyển</div>
+              <div class="text-muted">Giao hàng tiêu chuẩn (2-3 ngày)</div>
+            </div>
+          </div>
+        </div>
+        <!-- Support Section -->
+        <div class="info-section">
+          <div class="info-title">Cần giúp đỡ?</div>
+          <div class="contact-info">
+            <div class="mb-2">
+              <span class="me-2">📧</span>
+              <a href="mailto:tuandat24034@gmail.com">tuandat24034@gmail.com</a>
+            </div>
+            <div>
+              <span class="me-2">📞</span>
+              <a href="tel:+84 973 526 118">+84 973 526 118</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Cost Breakdown -->
+      <div class="col-lg-4">
+        <div class="info-section">
+          <div class="cost-breakdown" id="cost-breakdown"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://127.0.0.1:8080";
+    const SHIP_FEE = 15000;
+
+    function formatCurrency(v) {
+      return Number(v).toLocaleString('vi-VN') + " ₫";
+    }
+
+    // Lấy orderId từ url
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('id');
+    
+
+    // Lấy thông tin đơn hàng
+    async function fetchOrder() {
+      if (!orderId) return null;
+      const res = await fetch(`${API}/orders/${orderId}`, { credentials: "include" });
+      if (!res.ok) return null;
+      return res.json();
+    }
+
+    function addDays(date, days) {
+      let d = new Date(date);
+      d.setDate(d.getDate() + days);
+      return d.toLocaleDateString('vi-VN');
+    }
+
+    function renderOrder(order) {
+      // Thông tin chung
+      document.getElementById('order-id').textContent = order.orderCode || "N/A";
+      document.getElementById('order-date').textContent = new Date(order.orderDate).toLocaleDateString('vi-VN');
+      document.getElementById('delivery-date').textContent = addDays(order.orderDate, 3); // 2-3 ngày giao hàng
+      document.getElementById('shipping-address').textContent = order.address || "Không có";
+
+      // Danh sách sản phẩm
+      let productListHtml = "";
+      order.orderDetails.forEach(item => {
+        productListHtml += `
+          <div class="product-item">
+            <img src="${item.productImage || 'https://placehold.co/60x60'}" alt="${item.productName}" class="product-image">
+            <div class="product-details">
+              <div class="product-name">${item.productName}</div>
+              <div class="product-qty">Số lượng: ${item.quantity}</div>
+            </div>
+            <div class="product-price">${formatCurrency(item.price * item.quantity)}</div>
+          </div>
+        `;
+      });
+      document.getElementById('product-list').innerHTML = productListHtml;
+
+      // Cost breakdown
+      let subTotal = order.orderDetails.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      let total = subTotal + SHIP_FEE;
+      document.getElementById('cost-breakdown').innerHTML = `
+        <div class="cost-row">
+          <span>Tạm tính</span>
+          <span>${formatCurrency(subTotal)}</span>
+        </div>
+        <div class="cost-row">
+          <span>Phí vận chuyển</span>
+          <span>${formatCurrency(SHIP_FEE)}</span>
+        </div>
+        <div class="cost-row total">
+          <span>Tổng cộng</span>
+          <span>${formatCurrency(total)}</span>
+        </div>
+      `;
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Animation success icon
+      const successIcon = document.querySelector('.success-icon');
+      successIcon.style.transform = 'scale(0)';
+      successIcon.style.transition = 'transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+      setTimeout(() => {
+        successIcon.style.transform = 'scale(1)';
+      }, 300);
+
+      // Hiển thị thông tin đơn hàng
+      const order = await fetchOrder();
+      if (!order) {
+        document.getElementById('product-list').innerHTML = '<div class="p-5 text-center text-danger">Không tìm thấy đơn hàng.</div>';
+        return;
+      }
+      renderOrder(order);
+
+      // Hover effect
+      const productList = document.getElementById('product-list');
+      productList.addEventListener('mouseover', function(e) {
+        if (e.target.closest('.product-item')) {
+          e.target.closest('.product-item').style.backgroundColor = '#f8f9fa';
+        }
+      });
+      productList.addEventListener('mouseout', function(e) {
+        if (e.target.closest('.product-item')) {
+          e.target.closest('.product-item').style.backgroundColor = 'white';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

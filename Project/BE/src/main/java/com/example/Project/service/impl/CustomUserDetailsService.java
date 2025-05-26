@@ -11,27 +11,33 @@ package com.example.Project.service.impl;
 
 import com.example.Project.entity.Customer;
 import com.example.Project.repository.CustomerRepository;
+import com.example.Project.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final CustomerRepository CustomerRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customer customer = CustomerRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Không tìm thầy tài khoản"));
+        Customer customer = customerRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy tài khoản"));
 
-        return User.builder()
-                .username(customer.getUsername())
-                .password(customer.getPassword())
-                .roles(customer.getRole().replace("ROLE_", ""))
-                .build();
+        // Tạo UserPrincipal trả về, chứa id của customer
+        return new UserPrincipal(
+                customer.getId(),
+                customer.getUsername(),
+                customer.getPassword(),
+                // chuyển đổi role thành GrantedAuthority list, ví dụ:
+                List.of(() -> customer.getRole())  // hoặc map roles sang SimpleGrantedAuthority
+        );
     }
 }

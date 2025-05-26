@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout – Your Store</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/icomoon/icomoon.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/vendor.css">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+  <section class="checkout-wrap py-5">
+    <div class="container">
+      <h2 class="mb-4">Checkout</h2>
+      <form id="checkout-form" class="row gx-5">
+
+        <!-- Customer Details -->
+        <div class="col-lg-6">
+          <h4>Customer Information</h4>
+          <div class="mb-3">
+            <label for="name" class="form-label">Full Name *</label>
+            <input id="name" name="name" type="text" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="username" class="form-label">Username *</label>
+            <input id="username" name="username" type="text" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="address" class="form-label">Address *</label>
+            <input id="address" name="address" type="text" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email *</label>
+            <input id="email" name="email" type="email" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="phone" class="form-label">Phone *</label>
+            <input id="phone" name="phone" type="tel" class="form-control" required>
+          </div>
+        </div>
+
+        <!-- Order Summary & Payment -->
+        <div class="col-lg-6">
+          <h4>Order Summary</h4>
+          <div id="order-summary" class="mb-4"></div>
+
+          <h4>Payment Method</h4>
+          <div class="list-group mb-4">
+            <label class="list-group-item">
+                <!-- value="cod" -->
+              <input type="radio" name="paymentMethod"  value="1" checked>
+              Cash on delivery
+            </label>
+            <label class="list-group-item">
+                
+              <input type="radio" name="paymentMethod" value="bank_transfer"  value="2"> 
+              Direct bank transfer
+            </label>
+          </div>
+
+          <!-- Bank transfer info & QR -->
+          <div id="bank-transfer-info" style="display:none; padding:15px; border:1px dashed #999; margin-bottom:20px; background:#f8f9fa;">
+            <p><strong>Người nhận:</strong> LE TUAN DAT</p>
+            <p><strong>Số tài khoản:</strong> 0973526118 – MB</p>
+            <div id="qr-container" class="mt-3 text-center">
+              <!-- QR sẽ được tạo tại đây -->
+            </div>
+          </div>
+
+          <!-- Success message -->
+          <div id="success-message" style="display:none;" class="alert alert-success mb-3">
+            <h5>🎉 Đặt hàng thành công!</h5>
+            <p>Mã đơn hàng: <strong id="order-code-display"></strong></p>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Place Order</button>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+
+  <div id="footer-placeholder"></div>
+  <div id="footer-bottom-placeholder"></div>
+
+  <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+
+    <script src="js/plugins.js"></script>
+    <script src="js/script.js"></script>
+    <script src="assets/js/general.js" type="module"></script>
+
+
+
+  <script>
+    const API = 'http://127.0.0.1:8080';
+    let currentCartId = null;
+    let currentTotalMoney = 0;
+    let currentOrderCode = '';
+
+    const isLoggedIn = () => !!sessionStorage.getItem('user');
+    const showLoginPopup = () => {
+      document.body.classList.add('show-popup');
+      document.getElementById('auth-popup')?.classList.remove('show-signup');
+    };
+
+    // 1) Lấy cart, gán currentCartId
+    async function fetchCart() {
+      const res = await fetch(`${API}/cart`, { credentials: 'include' });
+      if (!res.ok) return null;
+      const cart = await res.json();
+      currentCartId = cart.id;    // ← ID của cart hiện tại
+      return cart;
+    }
+
+    // 2) Prefill customer
+    async function prefillCustomer() {
+      const sess = JSON.parse(sessionStorage.getItem('user') || 'null');
+      let userId = sess?.id;
+      if (!userId) {
+        const cart = await fetchCart();
+        userId = cart?.customerId;
+      }
+      if (!userId) return;
+      try {
+        const res = await fetch(`${API}/customers/${userId}`, { credentials: 'include' });
+        if (!res.ok) throw '';
+        const c = await res.json();
+        ['name','username','address','email','phone'].forEach(f => {
+          const el = document.getElementById(f);
+          if (el && c[f] != null) el.value = c[f];
+        });
+      } catch {
+        console.warn('Không prefill được customer');
+      }
+    }
+
+    // 3) Hiển thị summary & tính total
+    async function loadOrderSummary() {
+      const cart = await fetchCart();
+      const ctn = document.getElementById('order-summary');
+      if (!cart) {
+        ctn.innerHTML = '<p class="text-danger">Không tải được giỏ hàng.</p>';
+        return;
+      }
+      const items = cart.orderDetails || [];
+      if (!items.length) {
+        ctn.innerHTML = '<p>Giỏ hàng trống</p>';
+        return;
+      }
+      const sub = items.reduce((s,i) => s + i.price * i.quantity, 0);
+      const tot = Number(cart.totalMoney ?? sub);
+      currentTotalMoney = tot;
+      ctn.innerHTML = `
+        <table class="table mb-2">
+          <thead><tr><th>Product</th><th class="text-end">Qty</th><th class="text-end">Line Total</th></tr></thead>
+          <tbody>
+            ${items.map(i => `
+              <tr>
+                <td>${i.productName}</td>
+                <td class="text-end">${i.quantity}</td>
+                <td class="text-end">${(i.price*i.quantity).toLocaleString('vi-VN')}₫</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <p class="fw-bold">Subtotal: ${sub.toLocaleString('vi-VN')}₫</p>
+        <p class="fw-bold">Total:    ${tot.toLocaleString('vi-VN')}₫</p>
+      `;
+    }
+
+    // 4) Lấy orderCode từ DB dựa vào currentCartId
+    const fetchOrderCode = async () => {
+      if (!currentCartId) throw 'Chưa có cart ID';
+      const res = await fetch(`${API}/orders/${currentCartId}`, { credentials:'include' });
+      if (!res.ok) throw `HTTP ${res.status}`;
+      const { orderCode } = await res.json();
+      return orderCode;
+    };
+
+    // 5) Tạo QR khi đã có currentOrderCode
+    function generateQR() {
+      const amt = currentTotalMoney;
+      const name = encodeURIComponent("LE TUAN DAT");
+      const info = encodeURIComponent(currentOrderCode);
+      const vietQR = `https://img.vietqr.io/image/MB-0973526118-compact.png?accountName=${name}&amount=${amt}&addInfo=${info}`;
+      const backupData = `Chuyen khoan|TK:0973526118|MB|Ten:LE TUAN DAT|Tien:${amt}VND|NoiDung:${info}`;
+      const backupQR = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(backupData)}`;
+      document.getElementById("qr-container").innerHTML = `
+        <img src="${vietQR}" width="200" alt="VietQR"
+             onerror="this.style.display='none';document.getElementById('backup').style.display='block'">
+        <img id="backup" src="${backupQR}" width="200" alt="Backup QR" style="display:none">
+        <p class="mt-2">
+          <small>Số tiền: <strong>${amt.toLocaleString('vi-VN')}₫</strong><br>
+          Nội dung: <strong>${info}</strong></small>
+        </p>
+      `;
+    }
+
+    // 6) Xử lý submit checkout
+    async function onSubmitCheckout(e) {
+  e.preventDefault();
+  if (!isLoggedIn()) { alert('Vui lòng đăng nhập'); showLoginPopup(); return; }
+
+  const form = e.target;
+  const pm = form.paymentMethod.value;
+  const payload = {
+    nameReceiver: form.name.value,
+    address:      form.address.value,
+    email:        form.email.value,
+    phone:        form.phone.value,
+    paymentId:    pm,
+    transportId:  null,
+    notes:        null
+  };
+
+  // 1) Gửi checkout
+  let order;
+  try {
+    const res = await fetch(`${API}/cart/checkout`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Checkout failed: ${errText || res.status}`);
+    }
+    order = await res.json();
+  } catch (err) {
+    console.error(err);
+    return alert('Đặt hàng không thành công, vui lòng thử lại.');
+  }
+
+  // 2) Lấy mã thật (nếu checkout không trả về orderCode)
+  currentOrderCode = order.orderCode
+    ? order.orderCode
+    : await fetchOrderCode(); // chỉ khi order.orderCode undefined
+
+  // 3) Activate đơn
+  try {
+    await fetch(`${API}/orders/activate/${encodeURIComponent(currentOrderCode)}`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+  } catch (err) {
+    console.warn('Activate failed', err);
+  }
+
+  // 4) Hiển thị kết quả
+  document.getElementById('order-code-display').textContent = currentOrderCode;
+  document.getElementById('success-message').style.display = 'block';
+
+  if (pm === 'bank_transfer') {
+    generateQR();
+    setTimeout(() =>
+      document.getElementById("bank-transfer-info")
+              .scrollIntoView({ behavior:'smooth', block:'center' }),
+    50);
+  } else {
+    setTimeout(() => {
+      window.location.href = `/order-confirmation.html?id=${order.id}`;
+    }, 1500);
+  }
+}
+
+
+    // 7) Hiển thị preview QR khi đổi phương thức
+    function handlePaymentMethodChange() {
+      const sel = document.querySelector('input[name="paymentMethod"]:checked').value;
+      const info = document.getElementById("bank-transfer-info");
+      if (sel === 'bank_transfer') {
+        info.style.display = 'block';
+        // trước khi đặt hàng, fetch orderCode rồi preview QR
+        fetchOrderCode()
+          .then(code => { currentOrderCode = code; generateQR(); })
+          .catch(() => { /* nếu chưa có orderCode thì bỏ qua */ });
+      } else {
+        info.style.display = 'none';
+      }
+    }
+
+    // Khởi chạy khi load
+    document.addEventListener("DOMContentLoaded", async () => {
+      await loadOrderSummary();
+      await prefillCustomer();
+      document.getElementById('checkout-form').addEventListener('submit', onSubmitCheckout);
+      document.querySelectorAll('input[name="paymentMethod"]')
+              .forEach(r => r.addEventListener('change', handlePaymentMethodChange));
+      handlePaymentMethodChange();
+    });
+  </script>
+</body>
+</html>

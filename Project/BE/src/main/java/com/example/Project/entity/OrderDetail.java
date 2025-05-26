@@ -29,20 +29,27 @@ public class OrderDetail {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "idOrd", insertable = false, updatable = false)
+    @JoinColumn(name = "idOrd")
     private Order order;
 
     @ManyToOne
     @JoinColumn(name = "idProduct", insertable = false, updatable = false)
     private Product product;
 
+    @Column(name = "idProduct")
+    private Long productId;
+
 
     private BigDecimal price;
 
-    private Integer qty;
+    private Integer quantity;
 
     private BigDecimal total;
 
     @Column(name = "return_qty")
     private Integer returnQty;
+
+    @Column(nullable = false)
+    private Boolean savedForLater = false;
+
 }

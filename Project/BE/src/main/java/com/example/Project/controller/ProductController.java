@@ -32,6 +32,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.findAll(pageable));
     }
 
+
     @GetMapping("/multi")
     public ResponseEntity<List<ProductDTO>> findByIds(@RequestParam List<Long> ids) {
         return ResponseEntity.ok(productService.findByIds(ids));

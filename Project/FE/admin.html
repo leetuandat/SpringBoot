@@ -612,6 +612,11 @@
                             <label class="form-label">Mô tả</label>
                             <textarea class="form-control" id="categoryDescription" rows="3"></textarea>
                         </div>
+                        <div class="mb-3 form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="categoryActive" checked>
+                            <label class="form-check-label" for="categoryActive">Kích hoạt</label>
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -685,140 +690,140 @@
     <script src="js/script.js"></script>
     <script type="module" src="assets/js/general.js"></script>
 
-   <script>
-    // ==================== PHẦN 1: CẤU HÌNH CHUNG ====================
-const API = "http://127.0.0.1:8080";
-const q = s => document.querySelector(s);
-const qa = s => Array.from(document.querySelectorAll(s));
-const fmtDate = d => new Date(d).toLocaleDateString('vi-VN');
+    <script>
+        // ==================== PHẦN 1: CẤU HÌNH CHUNG ====================
+        const API = "http://127.0.0.1:8080";
+        const q = s => document.querySelector(s);
+        const qa = s => Array.from(document.querySelectorAll(s));
+        const fmtDate = d => new Date(d).toLocaleDateString('vi-VN');
 
-// ==================== BIẾN TOÀN CỤC ====================
-let productsList = [];
-let categoriesLoaded = false;
-let authorsLoaded = false;
+        // ==================== BIẾN TOÀN CỤC ====================
+        let productsList = [];
+        let categoriesLoaded = false;
+        let authorsLoaded = false;
 
-// ==================== HELPER FUNCTIONS ====================
-// 1) Hàm trả về nguyên Page object
-async function fetchPageObject(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-    return res.json();
-}
-
-// 2) Hàm chỉ lấy content[] (dùng để load list)
-async function fetchPageContent(url) {
-    const page = await fetchPageObject(url);
-    return page.content || [];
-}
-
-// 3) Fetch page với error handling tốt hơn
-async function fetchPage(url) {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        // ==================== HELPER FUNCTIONS ====================
+        // 1) Hàm trả về nguyên Page object
+        async function fetchPageObject(url) {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+            return res.json();
         }
-        const data = await response.json();
-        return Array.isArray(data) ? data : (data.content || []);
-    } catch (error) {
-        console.error('Fetch error:', error);
-        return [];
-    }
-}
 
-// ==================== NAV TABS ====================
-function showSection(name) {
-    qa('.content-section').forEach(s => s.classList.remove('active'));
-    q(`#${name}-section`)?.classList.add('active');
-}
+        // 2) Hàm chỉ lấy content[] (dùng để load list)
+        async function fetchPageContent(url) {
+            const page = await fetchPageObject(url);
+            return page.content || [];
+        }
 
-function activateTab(el) {
-    qa('.nav-link').forEach(l => l.classList.remove('active'));
-    el.classList.add('active');
-}
-
-function initTabs() {
-    qa('.nav-link[data-section]').forEach(link => {
-        link.addEventListener('click', () => {
-            activateTab(link);
-            showSection(link.dataset.section);
-        });
-    });
-    const init = q('.nav-link.active');
-    if (init) showSection(init.dataset.section);
-}
-
-// ==================== DASHBOARD STATS ====================
-async function loadDashboardStats() {
-    try {
-        const prodPage = await fetchPageObject(`${API}/products?page=0&size=1`);
-        const custPage = await fetchPageObject(`${API}/customers?role=ROLE_USER&page=0&size=1`);
-
-        // Lấy tất cả đơn về để vừa tính doanh thu, vừa đếm đơn hợp lệ
-        const allOrdPage = await fetchPageObject(`${API}/orders?page=0&size=1000`);
-        const allOrders = allOrdPage.content || [];
-
-        // Lọc các đơn có ít nhất 1 món
-        const validOrders = allOrders.filter(o => (o.totalItems ?? 0) > 0);
-
-        // Cập nhật số liệu lên dashboard
-        q('#totalBooks').textContent = prodPage.totalElements || 0;
-        q('#totalOrders').textContent = validOrders.length;
-        q('#totalCustomers').textContent = custPage.totalElements || 0;
-
-        // Tính doanh thu từ tất cả đơn
-        const totalRevenue = allOrders
-            .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
-        q('#totalRevenue').textContent = `${totalRevenue.toLocaleString('vi-VN')} ₫`;
-    } catch (e) {
-        console.error('Error loading dashboard stats:', e);
-    }
-}
-
-// ==================== PRODUCTS MANAGEMENT ====================
-
-// ✅ HÀM LOAD PRODUCTS DUY NHẤT (loại bỏ loadProducts cũ)
-async function loadProducts() {
-    console.log('🔄 Loading products...');
-    
-    try {
-        const timestamp = Date.now();
-        const url = `${API}/products?page=0&size=1000&_t=${timestamp}`;
-        console.log('🌐 Fetching from:', url);
-        
-        const res = await fetch(url, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache'
+        // 3) Fetch page với error handling tốt hơn
+        async function fetchPage(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                return Array.isArray(data) ? data : (data.content || []);
+            } catch (error) {
+                console.error('Fetch error:', error);
+                return [];
             }
-        });
-        
-        console.log(`📡 Load response status: ${res.status}`);
-        
-        if (!res.ok) {
-            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
         }
-        
-        const data = await res.json();
-        console.log('📦 Received data:', data);
-        
-        productsList = data.content || data || [];
-        console.log(`✅ Loaded ${productsList.length} products`);
-        
-        // Debug: In ra 3 sản phẩm đầu
-        productsList.slice(0, 3).forEach(p => {
-            console.log(`📋 Product: ID=${p.id}, Name=${p.name}`);
-        });
-        
-        renderProducts(productsList);
-        
-    } catch (error) {
-        console.error('❌ Load products error:', error);
-        const tbody = document.querySelector('#productsTableBody');
-        if (tbody) {
-            tbody.innerHTML = `
+
+        // ==================== NAV TABS ====================
+        function showSection(name) {
+            qa('.content-section').forEach(s => s.classList.remove('active'));
+            q(`#${name}-section`)?.classList.add('active');
+        }
+
+        function activateTab(el) {
+            qa('.nav-link').forEach(l => l.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function initTabs() {
+            qa('.nav-link[data-section]').forEach(link => {
+                link.addEventListener('click', () => {
+                    activateTab(link);
+                    showSection(link.dataset.section);
+                });
+            });
+            const init = q('.nav-link.active');
+            if (init) showSection(init.dataset.section);
+        }
+
+        // ==================== DASHBOARD STATS ====================
+        async function loadDashboardStats() {
+            try {
+                const prodPage = await fetchPageObject(`${API}/products?page=0&size=1`);
+                const custPage = await fetchPageObject(`${API}/customers?role=ROLE_USER&page=0&size=1`);
+
+                // Lấy tất cả đơn về để vừa tính doanh thu, vừa đếm đơn hợp lệ
+                const allOrdPage = await fetchPageObject(`${API}/orders?page=0&size=1000`);
+                const allOrders = allOrdPage.content || [];
+
+                // Lọc các đơn có ít nhất 1 món
+                const validOrders = allOrders.filter(o => (o.totalItems ?? 0) > 0);
+
+                // Cập nhật số liệu lên dashboard
+                q('#totalBooks').textContent = prodPage.totalElements || 0;
+                q('#totalOrders').textContent = validOrders.length;
+                q('#totalCustomers').textContent = custPage.totalElements || 0;
+
+                // Tính doanh thu từ tất cả đơn
+                const totalRevenue = allOrders
+                    .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+                q('#totalRevenue').textContent = `${totalRevenue.toLocaleString('vi-VN')} ₫`;
+            } catch (e) {
+                console.error('Error loading dashboard stats:', e);
+            }
+        }
+
+        // ==================== PRODUCTS MANAGEMENT ====================
+
+        // ✅ HÀM LOAD PRODUCTS DUY NHẤT (loại bỏ loadProducts cũ)
+        async function loadProducts() {
+            console.log('🔄 Loading products...');
+
+            try {
+                const timestamp = Date.now();
+                const url = `${API}/products?page=0&size=1000&_t=${timestamp}`;
+                console.log('🌐 Fetching from:', url);
+
+                const res = await fetch(url, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                });
+
+                console.log(`📡 Load response status: ${res.status}`);
+
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                }
+
+                const data = await res.json();
+                console.log('📦 Received data:', data);
+
+                productsList = data.content || data || [];
+                console.log(`✅ Loaded ${productsList.length} products`);
+
+                // Debug: In ra 3 sản phẩm đầu
+                productsList.slice(0, 3).forEach(p => {
+                    console.log(`📋 Product: ID=${p.id}, Name=${p.name}`);
+                });
+
+                renderProducts(productsList);
+
+            } catch (error) {
+                console.error('❌ Load products error:', error);
+                const tbody = document.querySelector('#productsTableBody');
+                if (tbody) {
+                    tbody.innerHTML = `
                 <tr>
                     <td colspan="8" class="text-center text-danger">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -826,27 +831,27 @@ async function loadProducts() {
                         <br><small>Vui lòng thử lại hoặc kiểm tra kết nối</small>
                     </td>
                 </tr>`;
+                }
+            }
         }
-    }
-}
-// ✅ RENDER PRODUCTS
-function renderProducts(list) {
-    console.log('🎨 Rendering products, count:', list.length);
-    
-    const tbody = document.querySelector('#productsTableBody');
-    if (!tbody) {
-        console.error('❌ #productsTableBody not found');
-        return;
-    }
-    
-    if (!Array.isArray(list) || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">Không có sản phẩm nào</td></tr>`;
-        return;
-    }
-    
-    const html = list.map(p => {
-        console.log(`📝 Rendering product ID: ${p.id}, Name: ${p.name}`);
-        return `
+        // ✅ RENDER PRODUCTS
+        function renderProducts(list) {
+            console.log('🎨 Rendering products, count:', list.length);
+
+            const tbody = document.querySelector('#productsTableBody');
+            if (!tbody) {
+                console.error('❌ #productsTableBody not found');
+                return;
+            }
+
+            if (!Array.isArray(list) || list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">Không có sản phẩm nào</td></tr>`;
+                return;
+            }
+
+            const html = list.map(p => {
+                console.log(`📝 Rendering product ID: ${p.id}, Name: ${p.name}`);
+                return `
         <tr data-product-id="${p.id}" id="product-row-${p.id}">
             <td>${p.id}</td>
             <td>
@@ -880,230 +885,335 @@ function renderProducts(list) {
                 </div>
             </td>
         </tr>`;
-    }).join('');
-    
-    tbody.innerHTML = html;
-    console.log('✅ Products rendered successfully');
-}
-// ✅ DELETE PRODUCT - HÀM DUY NHẤT
-async function deleteProduct(id) {
-    console.log(`🚀 Starting delete for product ID: ${id}`);
-    
-    if (!confirm('Bạn có chắc chắn muốn xoá sản phẩm này?')) {
-        console.log('❌ User cancelled delete');
-        return;
-    }
+            }).join('');
 
-    // Find button và disable
-    const deleteBtn = document.querySelector(`button[onclick="deleteProduct(${id})"]`);
-    console.log('🔍 Found delete button:', deleteBtn);
-    
-    if (deleteBtn) {
-        deleteBtn.disabled = true;
-        deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    }
+            tbody.innerHTML = html;
+            console.log('✅ Products rendered successfully');
+        }
+        // ✅ DELETE PRODUCT - HÀM DUY NHẤT
+        async function deleteProduct(id) {
+            console.log(`🚀 Starting delete for product ID: ${id}`);
 
-    try {
-        console.log(`🗑️ Sending DELETE request for product ID: ${id}`);
-        console.log(`🌐 API URL: ${API}/products/${id}`);
-        
-        const res = await fetch(`${API}/products/${id}`, {
-            method: 'DELETE',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache'
+            if (!confirm('Bạn có chắc chắn muốn xoá sản phẩm này?')) {
+                console.log('❌ User cancelled delete');
+                return;
             }
-        });
 
-        console.log(`📡 Response status: ${res.status}`);
-        console.log(`📡 Response ok: ${res.ok}`);
+            // Find button và disable
+            const deleteBtn = document.querySelector(`button[onclick="deleteProduct(${id})"]`);
+            console.log('🔍 Found delete button:', deleteBtn);
 
-        // 204 = No Content (DELETE success)
-        // 200 = OK (DELETE success)
-        if (res.status === 204 || res.status === 200 || res.ok) {
-            console.log(`✅ DELETE SUCCESS - Status: ${res.status}`);
-            
-            // === BƯỚC 1: Debug current state ===
-            console.log('📊 Before delete - Products count:', productsList.length);
-            console.log('📊 Product to delete:', productsList.find(p => p.id == id));
-            
-            // === BƯỚC 2: Xóa khỏi array ===
-            const originalLength = productsList.length;
-            productsList = productsList.filter(p => {
-                console.log(`Comparing: ${p.id} != ${id} (${typeof p.id} != ${typeof id})`);
-                return p.id != id; // Dùng != thay vì !== để tránh vấn đề type
-            });
-            
-            console.log(`📊 After filter - Products count: ${originalLength} -> ${productsList.length}`);
-            
-            // === BƯỚC 3: Xóa khỏi DOM ===
-            const row = document.querySelector(`tr[data-product-id="${id}"]`);
-            console.log('🎯 Found table row:', row);
-            
-            if (row) {
-                console.log('🗑️ Removing row from DOM...');
-                row.style.background = '#ffebee'; // Highlight trước khi xóa
-                
-                setTimeout(() => {
-                    row.remove();
-                    console.log('✅ Row removed from DOM');
-                }, 100);
-            } else {
-                console.log('❌ Table row not found - searching alternatives...');
-                
-                // Thử tìm theo các cách khác
-                const allRows = document.querySelectorAll('#productsTableBody tr');
-                console.log(`🔍 Total rows found: ${allRows.length}`);
-                
-                allRows.forEach((row, index) => {
-                    const firstCell = row.querySelector('td:first-child');
-                    if (firstCell && firstCell.textContent == id) {
-                        console.log(`🎯 Found row by cell content at index ${index}`);
-                        row.style.background = '#ffebee';
-                        setTimeout(() => row.remove(), 100);
+            if (deleteBtn) {
+                deleteBtn.disabled = true;
+                deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            }
+
+            try {
+                console.log(`🗑️ Sending DELETE request for product ID: ${id}`);
+                console.log(`🌐 API URL: ${API}/products/${id}`);
+
+                const res = await fetch(`${API}/products/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
                     }
                 });
+
+                console.log(`📡 Response status: ${res.status}`);
+                console.log(`📡 Response ok: ${res.ok}`);
+
+                // 204 = No Content (DELETE success)
+                // 200 = OK (DELETE success)
+                if (res.status === 204 || res.status === 200 || res.ok) {
+                    console.log(`✅ DELETE SUCCESS - Status: ${res.status}`);
+
+                    // === BƯỚC 1: Debug current state ===
+                    console.log('📊 Before delete - Products count:', productsList.length);
+                    console.log('📊 Product to delete:', productsList.find(p => p.id == id));
+
+                    // === BƯỚC 2: Xóa khỏi array ===
+                    const originalLength = productsList.length;
+                    productsList = productsList.filter(p => {
+                        console.log(`Comparing: ${p.id} != ${id} (${typeof p.id} != ${typeof id})`);
+                        return p.id != id; // Dùng != thay vì !== để tránh vấn đề type
+                    });
+
+                    console.log(`📊 After filter - Products count: ${originalLength} -> ${productsList.length}`);
+
+                    // === BƯỚC 3: Xóa khỏi DOM ===
+                    const row = document.querySelector(`tr[data-product-id="${id}"]`);
+                    console.log('🎯 Found table row:', row);
+
+                    if (row) {
+                        console.log('🗑️ Removing row from DOM...');
+                        row.style.background = '#ffebee'; // Highlight trước khi xóa
+
+                        setTimeout(() => {
+                            row.remove();
+                            console.log('✅ Row removed from DOM');
+                        }, 100);
+                    } else {
+                        console.log('❌ Table row not found - searching alternatives...');
+
+                        // Thử tìm theo các cách khác
+                        const allRows = document.querySelectorAll('#productsTableBody tr');
+                        console.log(`🔍 Total rows found: ${allRows.length}`);
+
+                        allRows.forEach((row, index) => {
+                            const firstCell = row.querySelector('td:first-child');
+                            if (firstCell && firstCell.textContent == id) {
+                                console.log(`🎯 Found row by cell content at index ${index}`);
+                                row.style.background = '#ffebee';
+                                setTimeout(() => row.remove(), 100);
+                            }
+                        });
+                    }
+
+                    // === BƯỚC 4: Re-render toàn bộ table ===
+                    console.log('🔄 Re-rendering products table...');
+                    renderProducts(productsList);
+
+                    // === BƯỚC 5: Success message ===
+                    alert('✅ Xoá sản phẩm thành công!');
+
+                    // === BƯỚC 6: Force reload sau 2s ===
+                    setTimeout(async () => {
+                        console.log('🔄 Force reloading from server...');
+                        await loadProducts();
+                        console.log('✅ Reload completed');
+                    }, 2000);
+
+                } else {
+                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                }
+
+            } catch (error) {
+                console.error('❌ Delete error:', error);
+                alert(`❌ Lỗi xóa sản phẩm: ${error.message}`);
+            } finally {
+                // Re-enable button
+                if (deleteBtn) {
+                    deleteBtn.disabled = false;
+                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                }
             }
-            
-            // === BƯỚC 4: Re-render toàn bộ table ===
-            console.log('🔄 Re-rendering products table...');
-            renderProducts(productsList);
-            
-            // === BƯỚC 5: Success message ===
-            alert('✅ Xoá sản phẩm thành công!');
-            
-            // === BƯỚC 6: Force reload sau 2s ===
-            setTimeout(async () => {
-                console.log('🔄 Force reloading from server...');
-                await loadProducts();
-                console.log('✅ Reload completed');
-            }, 2000);
-            
-        } else {
-            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
         }
-        
-    } catch (error) {
-        console.error('❌ Delete error:', error);
-        alert(`❌ Lỗi xóa sản phẩm: ${error.message}`);
-    } finally {
-        // Re-enable button
-        if (deleteBtn) {
-            deleteBtn.disabled = false;
-            deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+
+        function forceRefreshProducts() {
+            console.log('🔄 Force refreshing products...');
+            productsList = []; // Clear cache
+            loadProducts();
         }
-    }
-}
 
-function forceRefreshProducts() {
-    console.log('🔄 Force refreshing products...');
-    productsList = []; // Clear cache
-    loadProducts();
-}
-
-// ✅ XÓA SẢN PHẨM KHỎI DOM
-function removeProductFromDOM(id) {
-    const row = document.querySelector(`tr[data-product-id="${id}"]`);
-    if (row) {
-        row.style.transition = 'opacity 0.3s ease';
-        row.style.opacity = '0.5';
-        setTimeout(() => {
-            if (row.parentNode) {
-                row.remove();
+        // ✅ XÓA SẢN PHẨM KHỎI DOM
+        function removeProductFromDOM(id) {
+            const row = document.querySelector(`tr[data-product-id="${id}"]`);
+            if (row) {
+                row.style.transition = 'opacity 0.3s ease';
+                row.style.opacity = '0.5';
+                setTimeout(() => {
+                    if (row.parentNode) {
+                        row.remove();
+                    }
+                }, 300);
             }
-        }, 300);
-    }
-}
+        }
 
-// ✅ FILTER PRODUCTS
-function filterProducts() {
-    const keyword = q('#productSearch')?.value?.trim()?.toLowerCase() || '';
-    const category = q('#categoryFilter')?.value || 'all';
-    
-    console.log(`🔍 Filter: keyword="${keyword}", category="${category}"`);
+        // ✅ FILTER PRODUCTS
+        function filterProducts() {
+            const keyword = q('#productSearch')?.value?.trim()?.toLowerCase() || '';
+            const category = q('#categoryFilter')?.value || 'all';
 
-    const filtered = productsList.filter(p => {
-        const matchesKeyword = !keyword || 
-            p.name?.toLowerCase().includes(keyword) ||
-            p.authorName?.toLowerCase().includes(keyword);
-            
-        const matchesCategory = category === 'all' ||
-            (p.categoryName && p.categoryName.toLowerCase() === category.toLowerCase()) ||
-            (p.categoryId && p.categoryId.toString() === category);
-            
-        return matchesKeyword && matchesCategory;
-    });
+            console.log(`🔍 Filter: keyword="${keyword}", category="${category}"`);
 
-    console.log(`📋 Hiển thị ${filtered.length}/${productsList.length} sản phẩm`);
-    renderProducts(filtered);
-}
+            const filtered = productsList.filter(p => {
+                const matchesKeyword = !keyword ||
+                    p.name?.toLowerCase().includes(keyword) ||
+                    p.authorName?.toLowerCase().includes(keyword);
 
-function testDeleteProduct(id) {
-    console.log('🧪 Testing delete for product ID:', id);
-    console.log('🧪 Current products count:', productsList.length);
-    console.log('🧪 Product exists:', productsList.find(p => p.id == id));
-    console.log('🧪 DOM row exists:', document.querySelector(`tr[data-product-id="${id}"]`));
-}
+                const matchesCategory = category === 'all' ||
+                    (p.categoryName && p.categoryName.toLowerCase() === category.toLowerCase()) ||
+                    (p.categoryId && p.categoryId.toString() === category);
 
-window.deleteProduct = deleteProduct;
-window.renderProducts = renderProducts; 
-window.loadProducts = loadProducts;
-window.forceRefreshProducts = forceRefreshProducts;
-window.testDeleteProduct = testDeleteProduct;
-// ==================== CATEGORIES ====================
-async function loadCategories() {
-    try {
-        const [cats, prods] = await Promise.all([
-            fetchPageContent(`${API}/categories?page=0&size=1000`),
-            fetchPageContent(`${API}/products?page=0&size=1000`)
-        ]);
+                return matchesKeyword && matchesCategory;
+            });
 
-        // Đếm theo tên category
-        const countMapByName = prods.reduce((m, p) => {
-            const key = p.categoryName || 'Unknown';
-            m[key] = (m[key] || 0) + 1;
-            return m;
-        }, {});
+            console.log(`📋 Hiển thị ${filtered.length}/${productsList.length} sản phẩm`);
+            renderProducts(filtered);
+        }
 
-        q('#categoriesTableBody').innerHTML = cats.map(c => `
+        function testDeleteProduct(id) {
+            console.log('🧪 Testing delete for product ID:', id);
+            console.log('🧪 Current products count:', productsList.length);
+            console.log('🧪 Product exists:', productsList.find(p => p.id == id));
+            console.log('🧪 DOM row exists:', document.querySelector(`tr[data-product-id="${id}"]`));
+        }
+
+        window.deleteProduct = deleteProduct;
+        window.renderProducts = renderProducts;
+        window.loadProducts = loadProducts;
+        window.forceRefreshProducts = forceRefreshProducts;
+        window.testDeleteProduct = testDeleteProduct;
+        // ==================== CATEGORIES ====================
+        async function loadCategories() {
+            try {
+                const [cats, prods] = await Promise.all([
+                    fetchPageContent(`${API}/categories?page=0&size=1000`),
+                    fetchPageContent(`${API}/products?page=0&size=1000`)
+                ]);
+                // Đếm số lượng sản phẩm theo thể loại
+                const countMapByName = prods.reduce((m, p) => {
+                    const key = p.categoryName || 'Unknown';
+                    m[key] = (m[key] || 0) + 1;
+                    return m;
+                }, {});
+
+                q('#categoriesTableBody').innerHTML = cats.map(c => `
             <tr>
               <td>${c.id}</td>
               <td>${c.name}</td>
               <td>${c.metaDescription || ''}</td>
               <td>${countMapByName[c.name] || 0}</td>
               <td>
-                <!-- Buttons here -->
+                <button class="btn btn-sm btn-danger" onclick="deleteCategory(${c.id})">
+                  <i class="fas fa-trash"></i> Xoá
+                </button>
               </td>
             </tr>
-          `).join('');
-    } catch (e) {
-        console.error(e);
-    }
-}
+        `).join('');
+            } catch (e) {
+                console.error(e);
+            }
+        }
 
-// ==================== ORDERS ====================
-async function loadOrders() {
-    let list = [];
-    try {
-        list = await fetchPage(`${API}/orders?page=0&size=100`);
-    } catch (err) {
-        console.error('Lỗi loadOrders():', err);
-    }
+        async function deleteCategory(id) {
+            if (!confirm('Bạn có chắc chắn muốn xoá thể loại này?')) return;
 
-    const validOrders = list.filter(o => (o.totalItems ?? 0) > 0);
-    q('#ordersTableBody').innerHTML = validOrders.map(o => {
-        const money = (o.totalMoney ?? 0)
-            || (Array.isArray(o.orderDetails)
-                ? o.orderDetails.reduce((sum, d) => sum + ((d.price || 0) * (d.quantity || 0)), 0)
-                : 0);
+            try {
+                const res = await fetch(`${API}/categories/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (res.status === 204) {
+                    alert('Xoá thể loại thành công!');
+                    await loadCategories(); // reload lại danh sách
+                } else {
+                    const errorText = await res.text();
+                    throw new Error(errorText || `Lỗi: ${res.status}`);
+                }
+            } catch (e) {
+                alert('Không thể xoá thể loại: ' + e.message);
+                console.error('deleteCategory', e);
+            }
+        }
 
-        // Tính text và class cho trạng thái
-        const statusText = o.isActive === 1 ? 'Xác nhận' : 'Chưa xác nhận';
-        const badgeClass = o.isActive === 1 ? 'badge-active' : 'badge-pending';
 
-        return `
+        async function saveCategory() {
+            const id = document.getElementById('categoryId').value;
+            const name = document.getElementById('categoryName').value.trim();
+            const description = document.getElementById('categoryDescription').value.trim();
+            const isActive = document.getElementById('categoryActive')?.checked ?? true; // Luôn lấy giá trị, mặc định true
+
+            // Validate
+            if (!name) {
+                alert('Tên thể loại không được để trống!');
+                return;
+            }
+
+            const payload = {
+                id: id ? +id : null,
+                name: name,
+                description: description,
+                isActive: isActive
+            };
+
+            try {
+                const method = id ? 'PUT' : 'POST';
+                const url = id ? `${API}/categories/${id}` : `${API}/categories`;
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    credentials: 'include'
+                });
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(errorText);
+                }
+                alert('Lưu thể loại thành công!');
+                // Đóng modal, reload lại table
+                const categoryModalEl = document.getElementById('categoryModal');
+                const categoryModal = bootstrap.Modal.getInstance(categoryModalEl);
+                if (categoryModal) categoryModal.hide();
+                await loadCategories();
+            } catch (e) {
+                alert('Không thể lưu thể loại:\n' + e.message);
+                console.error(e);
+            }
+        }
+
+        let categoriesList = [];
+
+        // Mở modal (nếu truyền id thì là edit, không thì là create mới)
+        async function openCategoryModal(id = null) {
+            const form = document.getElementById('categoryForm');
+            form.reset();
+            document.getElementById('categoryId').value = id || '';
+
+            // Đặt tiêu đề modal
+            document.getElementById('categoryModalTitle').textContent = id ? 'Chỉnh sửa thể loại' : 'Thêm thể loại mới';
+
+            if (id) {
+                // Edit mode: load chi tiết category
+                try {
+                    const res = await fetch(`${API}/categories/${id}`, { credentials: 'include' });
+                    if (!res.ok) throw new Error('Không tải được thông tin thể loại');
+                    const c = await res.json();
+                    document.getElementById('categoryName').value = c.name || '';
+                    document.getElementById('categoryDescription').value = c.metaDescription || '';
+                } catch (e) {
+                    alert('Lỗi tải thông tin thể loại!');
+                    return;
+                }
+            }
+
+            // Hiển thị modal
+            const modal = new bootstrap.Modal(document.getElementById('categoryModal'));
+            modal.show();
+        }
+        window.openCategoryModal = openCategoryModal;
+        window.saveCategory = saveCategory;
+        window.loadCategories = loadCategories;
+        window.deleteCategory = deleteCategory;
+
+
+        // Khởi tạo khi load trang
+        document.addEventListener('DOMContentLoaded', loadCategories);
+
+        // ==================== ORDERS ====================
+        async function loadOrders() {
+            let list = [];
+            try {
+                list = await fetchPage(`${API}/orders?page=0&size=100`);
+            } catch (err) {
+                console.error('Lỗi loadOrders():', err);
+            }
+
+            const validOrders = list.filter(o => (o.totalItems ?? 0) > 0);
+            q('#ordersTableBody').innerHTML = validOrders.map(o => {
+                const money = (o.totalMoney ?? 0)
+                    || (Array.isArray(o.orderDetails)
+                        ? o.orderDetails.reduce((sum, d) => sum + ((d.price || 0) * (d.quantity || 0)), 0)
+                        : 0);
+
+                // Tính text và class cho trạng thái
+                const statusText = o.isActive === 1 ? 'Xác nhận' : 'Chưa xác nhận';
+                const badgeClass = o.isActive === 1 ? 'badge-active' : 'badge-pending';
+
+                return `
           <tr>
             <td>${o.orderCode}</td>
             <td>${o.nameReceiver}</td>
@@ -1118,14 +1228,14 @@ async function loadOrders() {
             </td>
           </tr>
         `;
-    }).join('');
-}
+            }).join('');
+        }
 
-// ==================== CUSTOMERS ====================
-async function loadCustomers() {
-    try {
-        const list = await fetchPageContent(`${API}/customers?page=0&size=1000`);
-        q('#customersTableBody').innerHTML = list.map(u => `
+        // ==================== CUSTOMERS ====================
+        async function loadCustomers() {
+            try {
+                const list = await fetchPageContent(`${API}/customers?page=0&size=1000`);
+                q('#customersTableBody').innerHTML = list.map(u => `
           <tr>
             <td>${u.id}</td>
             <td>${u.name}</td>
@@ -1138,287 +1248,287 @@ async function loadCustomers() {
             </td>
           </tr>
         `).join('');
-    } catch (e) {
-        console.error('Error loadCustomers():', e);
-    }
-}
-
-// ==================== MODAL VÀ FORM ====================
-// Load authors cho select trong modal
-async function loadAuthors() {
-    if (authorsLoaded) return;
-    
-    try {
-        console.log('📚 Đang tải danh sách tác giả...');
-        const res = await fetch(`${API}/authors?page=0&size=1000`, {
-            credentials: 'include'
-        });
-        
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        
-        const data = await res.json();
-        const sel = q('#authorSelect');
-        
-        if (sel) {
-            // Clear existing options except first one
-            sel.innerHTML = '<option value="">-- Chọn tác giả --</option>';
-            
-            data.content?.forEach(a => {
-                const opt = document.createElement('option');
-                opt.value = a.id;
-                opt.textContent = a.name;
-                sel.appendChild(opt);
-            });
-        }
-        
-        authorsLoaded = true;
-        console.log(`✅ Đã tải ${data.content?.length || 0} tác giả`);
-        
-    } catch (e) {
-        console.error('❌ Lỗi load authors:', e);
-    }
-}
-
-// Load categories cho select trong modal
-async function loadCategoriesForModal() {
-    if (categoriesLoaded) return;
-    
-    try {
-        console.log('📂 Đang tải danh sách danh mục...');
-        const res = await fetch(`${API}/categories?page=0&size=1000`, {
-            credentials: 'include'
-        });
-        
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        
-        const data = await res.json();
-        const sel = q('#categorySelect');
-        
-        if (sel) {
-            // Clear existing options except first one
-            sel.innerHTML = '<option value="">-- Chọn danh mục --</option>';
-            
-            data.content?.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.id;
-                opt.textContent = c.name;
-                sel.appendChild(opt);
-            });
-        }
-        
-        categoriesLoaded = true;
-        console.log(`✅ Đã tải ${data.content?.length || 0} danh mục`);
-        
-    } catch (e) {
-        console.error('❌ Lỗi load categories:', e);
-    }
-}
-
-// Load categories cho filter dropdown
-async function loadCategoriesForFilter() {
-    try {
-        const filterSelect = q('#categoryFilter');
-        if (!filterSelect) return;
-        
-        // Chỉ load nếu chưa có options
-        if (filterSelect.children.length <= 1) {
-            const res = await fetch(`${API}/categories?page=0&size=1000`, {
-                credentials: 'include'
-            });
-            
-            if (res.ok) {
-                const data = await res.json();
-                data.content?.forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = c.id;
-                    opt.textContent = c.name;
-                    filterSelect.appendChild(opt);
-                });
+            } catch (e) {
+                console.error('Error loadCustomers():', e);
             }
         }
-    } catch (e) {
-        console.error('❌ Lỗi load categories for filter:', e);
-    }
-}
 
-// Mở modal thêm/sửa sản phẩm
-async function openProductModal(id = null) {
-    console.log(`📝 Mở modal: ${id ? `Edit ID ${id}` : 'Create new'}`);
-    
-    // Khởi tạo Bootstrap Modal nếu chưa có
-    const productModalEl = document.getElementById('productModal');
-    if (!productModalEl) {
-        console.error('❌ Không tìm thấy #productModal');
-        return;
-    }
-    
-    const productModal = new bootstrap.Modal(productModalEl);
-    
-    // Reset form
-    const form = document.getElementById('productForm');
-    if (form) form.reset();
-    
-    q('#productId').value = id || '';
-    q('#productModalTitle').textContent = id ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới';
+        // ==================== MODAL VÀ FORM ====================
+        // Load authors cho select trong modal
+        async function loadAuthors() {
+            if (authorsLoaded) return;
 
-    // Load dữ liệu cho select
-    await Promise.all([
-        loadAuthors(),
-        loadCategoriesForModal()
-    ]);
+            try {
+                console.log('📚 Đang tải danh sách tác giả...');
+                const res = await fetch(`${API}/authors?page=0&size=1000`, {
+                    credentials: 'include'
+                });
 
-    if (id) {
-        // Edit mode: load chi tiết sản phẩm
-        try {
-            const res = await fetch(`${API}/products/${id}`, {
-                credentials: 'include'
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                const data = await res.json();
+                const sel = q('#authorSelect');
+
+                if (sel) {
+                    // Clear existing options except first one
+                    sel.innerHTML = '<option value="">-- Chọn tác giả --</option>';
+
+                    data.content?.forEach(a => {
+                        const opt = document.createElement('option');
+                        opt.value = a.id;
+                        opt.textContent = a.name;
+                        sel.appendChild(opt);
+                    });
+                }
+
+                authorsLoaded = true;
+                console.log(`✅ Đã tải ${data.content?.length || 0} tác giả`);
+
+            } catch (e) {
+                console.error('❌ Lỗi load authors:', e);
+            }
+        }
+
+        // Load categories cho select trong modal
+        async function loadCategoriesForModal() {
+            if (categoriesLoaded) return;
+
+            try {
+                console.log('📂 Đang tải danh sách danh mục...');
+                const res = await fetch(`${API}/categories?page=0&size=1000`, {
+                    credentials: 'include'
+                });
+
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                const data = await res.json();
+                const sel = q('#categorySelect');
+
+                if (sel) {
+                    // Clear existing options except first one
+                    sel.innerHTML = '<option value="">-- Chọn danh mục --</option>';
+
+                    data.content?.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.textContent = c.name;
+                        sel.appendChild(opt);
+                    });
+                }
+
+                categoriesLoaded = true;
+                console.log(`✅ Đã tải ${data.content?.length || 0} danh mục`);
+
+            } catch (e) {
+                console.error('❌ Lỗi load categories:', e);
+            }
+        }
+
+        // Load categories cho filter dropdown
+        async function loadCategoriesForFilter() {
+            try {
+                const filterSelect = q('#categoryFilter');
+                if (!filterSelect) return;
+
+                // Chỉ load nếu chưa có options
+                if (filterSelect.children.length <= 1) {
+                    const res = await fetch(`${API}/categories?page=0&size=1000`, {
+                        credentials: 'include'
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        data.content?.forEach(c => {
+                            const opt = document.createElement('option');
+                            opt.value = c.id;
+                            opt.textContent = c.name;
+                            filterSelect.appendChild(opt);
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error('❌ Lỗi load categories for filter:', e);
+            }
+        }
+
+        // Mở modal thêm/sửa sản phẩm
+        async function openProductModal(id = null) {
+            console.log(`📝 Mở modal: ${id ? `Edit ID ${id}` : 'Create new'}`);
+
+            // Khởi tạo Bootstrap Modal nếu chưa có
+            const productModalEl = document.getElementById('productModal');
+            if (!productModalEl) {
+                console.error('❌ Không tìm thấy #productModal');
+                return;
+            }
+
+            const productModal = new bootstrap.Modal(productModalEl);
+
+            // Reset form
+            const form = document.getElementById('productForm');
+            if (form) form.reset();
+
+            q('#productId').value = id || '';
+            q('#productModalTitle').textContent = id ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới';
+
+            // Load dữ liệu cho select
+            await Promise.all([
+                loadAuthors(),
+                loadCategoriesForModal()
+            ]);
+
+            if (id) {
+                // Edit mode: load chi tiết sản phẩm
+                try {
+                    const res = await fetch(`${API}/products/${id}`, {
+                        credentials: 'include'
+                    });
+
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                    const p = await res.json();
+
+                    // Fill form
+                    q('#productName').value = p.name || '';
+                    q('#productAuthorId').value = p.authorId || '';
+                    q('#productAuthorName').value = p.authorName || '';
+                    q('#categorySelect').value = p.categoryId || '';
+                    q('#productPrice').value = p.price || '';
+                    q('#productQuantity').value = p.quantity || '';
+                    q('#productImage').value = p.image || '';
+                    q('#productActive').checked = p.isActive !== false;
+                    q('#productSlug').value = p.slug || '';
+                    q('#productDescription').value = p.description || '';
+                    q('#productNotes').value = p.notes || '';
+                    q('#productContents').value = p.contents || '';
+                    q('#productMetaTitle').value = p.metaTitle || '';
+                    q('#productMetaKeyword').value = p.metaKeyword || '';
+                    q('#productMetaDescription').value = p.metaDescription || '';
+
+                } catch (e) {
+                    console.error('❌ Lỗi load product detail:', e);
+                    alert('Không thể tải thông tin sản phẩm');
+                    return;
+                }
+            }
+
+            productModal.show();
+        }
+
+        // Lưu sản phẩm
+        async function saveProduct() {
+            const form = document.getElementById('productForm');
+            const saveBtn = q('#productModal .btn-primary');
+
+            // Validate form
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // Disable button
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+            }
+
+            const id = q('#productId').value;
+            const payload = {
+                id: id ? +id : null,
+                name: q('#productName').value.trim(),
+                authorId: +q('#productAuthorId').value || null,
+                authorName: q('#productAuthorName').value.trim(),
+                categoryId: +q('#categorySelect').value || null,
+                price: +q('#productPrice').value || 0,
+                quantity: +q('#productQuantity').value || 0,
+                image: q('#productImage').value.trim(),
+                isActive: q('#productActive').checked,
+                slug: q('#productSlug').value.trim(),
+                description: q('#productDescription').value.trim(),
+                notes: q('#productNotes').value.trim(),
+                contents: q('#productContents').value.trim(),
+                metaTitle: q('#productMetaTitle').value.trim(),
+                metaKeyword: q('#productMetaKeyword').value.trim(),
+                metaDescription: q('#productMetaDescription').value.trim()
+            };
+
+            try {
+                console.log(`💾 ${id ? 'Cập nhật' : 'Tạo mới'} sản phẩm:`, payload);
+
+                const method = id ? 'PUT' : 'POST';
+                const url = id ? `${API}/products/${id}` : `${API}/products`;
+
+                const res = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Cache-Control': 'no-cache'
+                    },
+                    body: JSON.stringify(payload),
+                    credentials: 'include'
+                });
+
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(`HTTP ${res.status}: ${errorText}`);
+                }
+
+                console.log(`✅ ${id ? 'Cập nhật' : 'Tạo'} sản phẩm thành công`);
+
+                // Đóng modal
+                const productModalEl = document.getElementById('productModal');
+                const productModal = bootstrap.Modal.getInstance(productModalEl);
+                if (productModal) productModal.hide();
+
+                alert(`${id ? 'Cập nhật' : 'Thêm'} sản phẩm thành công!`);
+
+                // Reload danh sách
+                await loadProducts();
+
+            } catch (e) {
+                console.error('❌ Lỗi saveProduct():', e);
+                alert(`Không thể lưu sản phẩm. Lỗi: ${e.message}`);
+            } finally {
+                // Re-enable button
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = id ? 'Cập nhật' : 'Thêm sản phẩm';
+                }
+            }
+        }
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Khởi tạo ứng dụng...');
+
+            // Khởi tạo tabs
+            initTabs();
+
+            // Load tất cả dữ liệu
+            Promise.all([
+                loadDashboardStats(),
+                loadProducts(),
+                loadCategories(),
+                loadOrders(),
+                loadCustomers()
+            ]).then(() => {
+                console.log('✅ Đã tải xong tất cả dữ liệu');
+                q('#lastUpdate').textContent = new Date().toLocaleString('vi-VN');
+            }).catch(err => {
+                console.error('❌ Lỗi khởi tạo:', err);
             });
-            
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            
-            const p = await res.json();
-            
-            // Fill form
-            q('#productName').value = p.name || '';
-            q('#productAuthorId').value = p.authorId || '';
-            q('#productAuthorName').value = p.authorName || '';
-            q('#categorySelect').value = p.categoryId || '';
-            q('#productPrice').value = p.price || '';
-            q('#productQuantity').value = p.quantity || '';
-            q('#productImage').value = p.image || '';
-            q('#productActive').checked = p.isActive !== false;
-            q('#productSlug').value = p.slug || '';
-            q('#productDescription').value = p.description || '';
-            q('#productNotes').value = p.notes || '';
-            q('#productContents').value = p.contents || '';
-            q('#productMetaTitle').value = p.metaTitle || '';
-            q('#productMetaKeyword').value = p.metaKeyword || '';
-            q('#productMetaDescription').value = p.metaDescription || '';
-            
-        } catch (e) {
-            console.error('❌ Lỗi load product detail:', e);
-            alert('Không thể tải thông tin sản phẩm');
-            return;
-        }
-    }
 
-    productModal.show();
-}
+            // Event listeners cho search và filter
+            const searchInput = q('#productSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', filterProducts);
+            }
 
-// Lưu sản phẩm
-async function saveProduct() {
-    const form = document.getElementById('productForm');
-    const saveBtn = q('#productModal .btn-primary');
-    
-    // Validate form
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-    }
-    
-    // Disable button
-    if (saveBtn) {
-        saveBtn.disabled = true;
-        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
-    }
-    
-    const id = q('#productId').value;
-    const payload = {
-        id: id ? +id : null,
-        name: q('#productName').value.trim(),
-        authorId: +q('#productAuthorId').value || null,
-        authorName: q('#productAuthorName').value.trim(),
-        categoryId: +q('#categorySelect').value || null,
-        price: +q('#productPrice').value || 0,
-        quantity: +q('#productQuantity').value || 0,
-        image: q('#productImage').value.trim(),
-        isActive: q('#productActive').checked,
-        slug: q('#productSlug').value.trim(),
-        description: q('#productDescription').value.trim(),
-        notes: q('#productNotes').value.trim(),
-        contents: q('#productContents').value.trim(),
-        metaTitle: q('#productMetaTitle').value.trim(),
-        metaKeyword: q('#productMetaKeyword').value.trim(),
-        metaDescription: q('#productMetaDescription').value.trim()
-    };
+            const categoryFilter = q('#categoryFilter');
+            if (categoryFilter) {
+                categoryFilter.addEventListener('change', filterProducts);
+            }
 
-    try {
-        console.log(`💾 ${id ? 'Cập nhật' : 'Tạo mới'} sản phẩm:`, payload);
-        
-        const method = id ? 'PUT' : 'POST';
-        const url = id ? `${API}/products/${id}` : `${API}/products`;
-
-        const res = await fetch(url, {
-            method,
-            headers: { 
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache'
-            },
-            body: JSON.stringify(payload),
-            credentials: 'include'
+            console.log('✅ Khởi tạo hoàn tất');
         });
-        
-        if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error(`HTTP ${res.status}: ${errorText}`);
-        }
-
-        console.log(`✅ ${id ? 'Cập nhật' : 'Tạo'} sản phẩm thành công`);
-        
-        // Đóng modal
-        const productModalEl = document.getElementById('productModal');
-        const productModal = bootstrap.Modal.getInstance(productModalEl);
-        if (productModal) productModal.hide();
-        
-        alert(`${id ? 'Cập nhật' : 'Thêm'} sản phẩm thành công!`);
-        
-        // Reload danh sách
-        await loadProducts();
-        
-    } catch (e) {
-        console.error('❌ Lỗi saveProduct():', e);
-        alert(`Không thể lưu sản phẩm. Lỗi: ${e.message}`);
-    } finally {
-        // Re-enable button
-        if (saveBtn) {
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = id ? 'Cập nhật' : 'Thêm sản phẩm';
-        }
-    }
-}
-
-// ==================== INITIALIZATION ====================
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 Khởi tạo ứng dụng...');
-    
-    // Khởi tạo tabs
-    initTabs();
-    
-    // Load tất cả dữ liệu
-    Promise.all([
-        loadDashboardStats(),
-        loadProducts(),
-        loadCategories(),
-        loadOrders(),
-        loadCustomers()
-    ]).then(() => {
-        console.log('✅ Đã tải xong tất cả dữ liệu');
-        q('#lastUpdate').textContent = new Date().toLocaleString('vi-VN');
-    }).catch(err => {
-        console.error('❌ Lỗi khởi tạo:', err);
-    });
-    
-    // Event listeners cho search và filter
-    const searchInput = q('#productSearch');
-    if (searchInput) {
-        searchInput.addEventListener('input', filterProducts);
-    }
-    
-    const categoryFilter = q('#categoryFilter');
-    if (categoryFilter) {
-        categoryFilter.addEventListener('change', filterProducts);
-    }
-    
-    console.log('✅ Khởi tạo hoàn tất');
-});
-   </script>
+    </script>

@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public record ProductDTO(
         Long id,
@@ -30,5 +31,16 @@ public record ProductDTO(
         Integer quantity,
         String image,
         @NotNull(message = "isActive cannot be null")
-        Boolean isActive
-){}
+        Boolean isActive,
+        String slug,
+        String contents,
+        LocalDateTime createdDate,
+        LocalDateTime updatedDate,
+
+        String notes,
+        String metaTitle,
+        String metaKeyword,
+        String metaDescription,
+        Long categoryId
+
+        ){}

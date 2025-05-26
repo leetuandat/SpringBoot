@@ -1,0 +1,133 @@
+
+/* Info */
+.container {
+  width: 100%;
+  max-width: 1700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.avatar-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.avatar-preview img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.Info {
+  padding: 60px 0px;
+  background-color: #f9f9f9;
+}
+
+.Info .list-group-item {
+  display: flex;
+  align-items: center;
+}
+
+.Info .list-group-item i {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+.Info .list-group-item:nth-child(1) {
+  background-color: #dd8f22;
+  color: white;
+  font-size: 26px;
+  font-weight: 550;
+}
+
+/* .Info .list-group-item:nth-child(2),
+.fa-user-ninja {
+  color: #dd8f22;
+} */
+
+.Info .inner-card-title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.Info .inner-line {
+  border-top: 1px solid #b3b3b3;
+  margin: 0 50px;
+  margin-bottom: 20px;
+}
+
+.Info .inner-card-title h5 {
+  padding-left: 15px;
+}
+
+.Info .inner-card-title .inner-desc {
+  padding-right: 15px;
+}
+
+.Info .text-field {
+  display: flex;
+}
+
+.Info .outer-line {
+  border-left: 1px solid #b3b3b3;
+}
+
+.Info .outer-line img {
+  max-width: 60%;
+  border-radius: 50%;
+}
+
+.Info .outer-line small {
+  font-size: 1rem;
+}
+
+.Info .inner-footer {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  padding: 0;
+}
+
+.Info .inner-footer .inner-content {
+  color: #151515;
+}
+
+.Info .inner-footer i {
+  margin-right: 10px;
+}
+
+.Info .btn-primary {
+  padding: 5px 26px;
+  border-radius: 5px;
+}
+
+.button-two {
+  color: white;
+  background: #dd8f22;
+  padding: 7px 12px;
+  text-align: center;
+  border: 1px solid #dd8f22;
+  border-radius: 2px;
+  font-weight: 500;
+  width: fit-content;
+  font-size: 16px;
+}
+
+button {
+  height: 32px;
+  text-transform: none;
+}
+
+.Info .list-group-item.active {
+  color: #DD8F22;
+  font-weight: 600;
+  background-color: transparent;
+  border: none;
+}
+
+/* End Info */

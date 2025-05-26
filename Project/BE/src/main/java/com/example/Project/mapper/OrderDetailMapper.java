@@ -24,8 +24,10 @@ public interface OrderDetailMapper {
             @Mapping(source = "id", target = "id"),
             @Mapping(target = "productId", expression = "java(entity.getProduct() != null ? entity.getProduct().getId() : null)"),
             @Mapping(source = "price", target = "price"),
-            @Mapping(source = "qty", target = "quantity"),
-            @Mapping(source = "total", target = "total")
+            @Mapping(source = "quantity", target = "quantity"),
+            @Mapping(source = "total", target = "total"),
+            @Mapping(source = "product.name",  target = "productName"),
+            @Mapping(source = "product.image", target = "productImage")
     })
     OrderDetailDTO toDto(OrderDetail entity);
 
@@ -33,7 +35,7 @@ public interface OrderDetailMapper {
             @Mapping(source = "id", target = "id"),
             @Mapping(target = "product.id", source = "productId"),
             @Mapping(source = "price", target = "price"),
-            @Mapping(source = "quantity", target = "qty"),
+            @Mapping(source = "quantity", target = "quantity"),
             @Mapping(source = "total", target = "total")
     })
     OrderDetail toEntity(OrderDetailDTO dto);

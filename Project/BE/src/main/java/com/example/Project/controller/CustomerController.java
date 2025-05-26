@@ -9,6 +9,7 @@
 
 package com.example.Project.controller;
 
+import com.example.Project.dto.ChangePasswordRequest;
 import com.example.Project.dto.CustomerDTO;
 import com.example.Project.dto.CustomerUpdateDTO;
 import com.example.Project.entity.Customer;
@@ -21,7 +22,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -33,6 +36,7 @@ public class CustomerController {
     private final CustomerService customerService;
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
     public ResponseEntity<Page<CustomerDTO>> findAll(Pageable pageable) {
@@ -62,6 +66,22 @@ public class CustomerController {
         Customer updated = customerRepository.save(customer);
         return ResponseEntity.ok(customerMapper.toDto(updated));
     }
+
+    @PutMapping("/{id}/change-password")
+    public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest request) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy người dùng"));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), customer.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mật khẩu hiện tại không đúng");
+        }
+
+        customer.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        customerRepository.save(customer);
+
+        return ResponseEntity.ok("Đổi mật khẩu thành công");
+    }
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         customerService.delete(id);

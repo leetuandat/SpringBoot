@@ -10,139 +10,26 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
         integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="/icomoon/icomoon.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/vendor.css">
     <!-- <link rel="stylesheet" href="assets/css/base.css"> -->
     <link rel="stylesheet" href="style.css" type="text/css" />
-    <style>
-        .container {
-            width: 100%;
-            max-width: 1700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .avatar-preview {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .avatar-preview img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .Info {
-            padding: 60px 0px;
-            background-color: #F9F9F9;
-        }
-
-        .Info .list-group-item {
-            display: flex;
-            align-items: center;
-        }
-
-        .Info .list-group-item i {
-            font-size: 2rem;
-            margin-right: 1rem;
-        }
-
-
-        .Info .list-group-item:nth-child(1) {
-            background-color: #DD8F22;
-            color: white;
-            font-size: 26px;
-            font-weight: 550;
-        }
-
-        .Info .list-group-item:nth-child(2),
-        .fa-user-ninja {
-            color: #DD8F22;
-        }
-
-        .Info .inner-card-title {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .Info .inner-line {
-            border-top: 1px solid #B3b3b3;
-            margin: 0 50px;
-            margin-bottom: 20px;
-        }
-
-        .Info .inner-card-title h5 {
-            padding-left: 15px;
-        }
-
-        .Info .inner-card-title .inner-desc {
-            padding-right: 15px;
-        }
-
-        .Info .text-field {
-            display: flex;
-        }
-
-        .Info .outer-line {
-            border-left: 1px solid #b3b3b3;
-        }
-
-        .Info .outer-line img {
-            max-width: 60%;
-            border-radius: 50%;
-        }
-
-        .Info .outer-line small {
-            font-size: 1rem;
-        }
-
-        .Info .inner-footer {
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 19px;
-            padding: 0;
-        }
-
-        .Info .inner-footer .inner-content {
-            color: #151515;
-        }
-
-        .Info .inner-footer i {
-            margin-right: 10px;
-        }
-
-        .Info .btn-primary {
-            padding: 5px 26px;
-            border-radius: 5px;
-        }
-
-        .button-two {
-            color: white;
-            background: #DD8F22;
-            padding: 7px 12px;
-            text-align: center;
-            border: 1px solid #DD8F22;
-            border-radius: 2px;
-            font-weight: 500;
-            width: fit-content;
-            font-size: 16px;
-        }
-
-        button {
-            height: 32px;
-            text-transform: none;
-        }
-    </style>
+    <link rel="stylesheet" href="profile.css" type="text/css">
 </head>
 
 <body>
+
+    <style>
+        * {
+            font-family: 'Roboto', sans-serif;
+            /* color: #151515; */
+        }
+    </style>
+
 
     <div id="header-placeholder"></div>
 
@@ -153,17 +40,14 @@
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-action" aria-current="true">Thông tin tài
                             khoản</a>
-                        <a href="#" class="list-group-item list-group-item-action" aria-current="true">
+                        <a href="#" class="list-group-item list-group-item-action active" aria-current="true"
+                            data-tab="info">
                             <i class="fa-solid fa-user-ninja"></i>
-                            <b>Thông tin cá nhân</b>
+                            Thông tin cá nhân
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action">
+                        <a href="#" class="list-group-item list-group-item-action" data-tab="security">
                             <i class="fa-solid fa-key"></i>
                             Thông tin bảo mật
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <i class="fa-solid fa-wallet"></i>
-                            Thông tin ví
                         </a>
                         <a href="#" class="list-group-item list-group-item-action">
                             <i class="fa-solid fa-clock-rotate-left"></i>
@@ -177,7 +61,7 @@
                             <i class="fa-solid fa-book-open"></i>
                             Hướng dẫn sử dụng
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action">
+                        <a href="#" id="logout-tab" class="list-group-item list-group-item-action">
                             <i class="fa-solid fa-right-from-bracket"></i>
                             Đăng xuất
                         </a>
@@ -186,71 +70,124 @@
 
                 <!-- Profile Information Section -->
                 <div class="col-md-9">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="inner-card-title col-12">
-                                    <h4 class="card-title">Thông tin cá nhân</h4>
-                                    <div class="inner-desc">
-                                        <i class="fa-solid fa-pen"></i>
-                                        Chỉnh sửa
+                    <!-- Tab Info -->
+                    <div id="tab-info" class="tab-content">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="inner-card-title col-12">
+                                        <h4 class="card-title">Thông tin cá nhân</h4>
+                                        <div class="inner-desc">
+                                            <i class="fa-solid fa-pen"></i>
+                                            Chỉnh sửa
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="inner-line col-11">
+                                    <div class="inner-line col-11">
 
-                                </div>
-                                <div class="col-md-8">
-                                    <form>
-                                        <div class="mb-3 text-field">
-                                            <label for="name" class="form-label col-3">Họ và tên</label>
-                                            <input type="text" class="form-control col-8" id="name">
-                                        </div>
-                                        <div class="mb-3 text-field">
-                                            <label for="phone" class="form-label col-3">Số điện thoại</label>
-                                            <input type="tel" class="form-control col-8" id="phone">
-                                        </div>
-                                        <div class="mb-3 text-field">
-                                            <label for="email" class="form-label col-3">Email</label>
-                                            <input type="email" class="form-control col-8" id="email">
-                                        </div>
-                                        <div class="mb-3 text-field">
-                                            <label for="address" class="form-label col-3">Địa chỉ</label>
-                                            <input type="text" class="form-control col-8" id="address">
-                                        </div>
-                                        <div class="submit col-9 offset-3 p-0">
-                                            <button type="button" class=" button-two"
-                                                onclick="saveProfile()">Lưu</button>
-                                        </div>
-                                        <div class="inner-footer">
-                                            <div class="inner-space col-3"></div>
-                                            <div class="inner-content">
-                                                <i class="fa-solid fa-shield-heart"></i>
-                                                Thông tin cá nhân của quý khách được đảm bảo an toàn
+                                    </div>
+                                    <div class="col-md-8">
+                                        <form>
+                                            <div class="mb-3 text-field">
+                                                <label for="name" class="form-label col-3">Họ và tên</label>
+                                                <input type="text" class="form-control col-8" id="name">
                                             </div>
-                                        </div>
-                                    </form>
+                                            <div class="mb-3 text-field">
+                                                <label for="phone" class="form-label col-3">Số điện thoại</label>
+                                                <input type="tel" class="form-control col-8" id="phone">
+                                            </div>
+                                            <div class="mb-3 text-field">
+                                                <label for="email" class="form-label col-3">Email</label>
+                                                <input type="email" class="form-control col-8" id="email">
+                                            </div>
+                                            <div class="mb-3 text-field">
+                                                <label for="address" class="form-label col-3">Địa chỉ</label>
+                                                <input type="text" class="form-control col-8" id="address">
+                                            </div>
+                                            <div class="submit col-9 offset-3 p-0">
+                                                <button type="button" class=" button-two"
+                                                    onclick="saveProfile()">Lưu</button>
+                                            </div>
+                                            <div class="inner-footer">
+                                                <div class="inner-space col-3"></div>
+                                                <div class="inner-content">
+                                                    <i class="fa-solid fa-shield-heart"></i>
+                                                    Thông tin cá nhân của quý khách được đảm bảo an toàn
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-4 d-flex flex-column align-items-center outer-line">
+                                        <!-- Avatar Image -->
+                                        <img id="avatarImg" src="" class="img-fluid rounded-circle"
+                                            alt="Profile Picture">
+
+                                        <!-- Chọn ảnh từ máy tính -->
+                                        <input type="file" id="avatarUpload" class="d-none"
+                                            onchange="previewAvatar(event)">
+                                        <button class="btn btn-outline-primary mt-5 mb-4"
+                                            onclick="document.getElementById('avatarUpload').click();">Chọn ảnh</button>
+
+                                        <!-- Hoặc nhập URL ảnh -->
+                                        <input type="text" class="form-control" id="avatarUrl"
+                                            placeholder="URL ảnh mới (nếu muốn thay đổi)"
+                                            oninput="updateAvatarFromUrl()" onchange="updateAvatarFromUrl()"
+                                            onblur="updateAvatarFromUrl()">
+
+                                        <small class="text-muted">Dung lượng file tối đa 1 MB</small>
+                                        <small class="text-muted">Định dạng: .JPEG, .PNG</small>
+                                    </div>
+
                                 </div>
-                                <div class="col-md-4 d-flex flex-column align-items-center outer-line">
-                                    <!-- Avatar Image -->
-                                    <img id="avatarImg" src="" class="img-fluid rounded-circle" alt="Profile Picture">
-
-                                    <!-- Chọn ảnh từ máy tính -->
-                                    <input type="file" id="avatarUpload" class="d-none" onchange="previewAvatar(event)">
-                                    <button class="btn btn-outline-primary mt-5 mb-4"
-                                        onclick="document.getElementById('avatarUpload').click();">Chọn ảnh</button>
-
-                                    <!-- Hoặc nhập URL ảnh -->
-                                    <input type="text" class="form-control" id="avatarUrl"
-                                        placeholder="URL ảnh mới (nếu muốn thay đổi)" oninput="updateAvatarFromUrl()"
-                                        onchange="updateAvatarFromUrl()" onblur="updateAvatarFromUrl()">
-
-                                    <small class="text-muted">Dung lượng file tối đa 1 MB</small>
-                                    <small class="text-muted">Định dạng: .JPEG, .PNG</small>
-                                </div>
-
                             </div>
                         </div>
                     </div>
+
+                    <!-- Tab đổi mật khẩu -->
+                    <div id="tab-security" class="tab-content d-none">
+                        <div class="card" style="padding: 0; border: none;">
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="inner-card-title col-12">
+                                        <h5 class="card-title" style="font-size: 1.25rem;">ĐỔI MẬT KHẨU CỦA BẠN</h5>
+                                    </div>
+                                    <div class="inner-line col-11"></div>
+                                    <div class="col-md-9">
+                                        <form id="change-password-form">
+                                            <div class="mb-3 text-field">
+                                                <label class="form-label col-3 is-invalid">Mật khẩu hiện tại</label>
+                                                <div class="col-8">
+                                                    <input type="password" class="form-control" id="curPass">
+                                                    <div id="password-error" class="text-danger mt-1"
+                                                        style="font-size: 14px;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 text-field">
+                                                <label class="form-label col-3">Mật khẩu mới</label>
+                                                <div class="col-8">
+                                                    <input type="password" class="form-control" id="newPass">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 text-field">
+                                                <label class="form-label col-3 is-invalid">Xác nhận mật khẩu</label>
+                                                <div class="col-8">
+                                                    <input type="password" class="form-control" id="cfPass">
+                                                    <div id="cfPass-error" class="text-danger mt-1"
+                                                        style="font-size: 14px;"></div>
+                                                </div>
+
+                                            </div>
+                                            <div class="submit col-9 offset-3 p-0">
+                                                <button type="submit" class="btn button-two btn-primary">Cập
+                                                    nhật</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -281,6 +218,22 @@
                 redirectToLogin();
             }
         }
+
+        document.getElementById("logout-tab")?.addEventListener("click", async function (e) {
+            e.preventDefault();
+
+            try {
+                // Gửi yêu cầu logout lên server (nếu có)
+                await fetch("/logout", { method: "POST", credentials: "include" });
+            } catch (err) {
+                console.warn("Không gọi được API logout. Tiếp tục xóa session local.");
+            }
+
+            // Xóa session frontend và reload
+            sessionStorage.clear();
+            location.href = "/index.html"; // hoặc trang login nếu có
+        });
+
 
         function redirectToLogin() {
             alert("Vui lòng đăng nhập!");
@@ -351,6 +304,89 @@
 
         // Gọi khi trang load
         fetchUserInfo();
+        document.querySelectorAll(".list-group-item[data-tab]").forEach(item => {
+            item.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const tabId = this.dataset.tab;
+
+                // Ẩn tất cả nội dung
+                document.querySelectorAll(".tab-content").forEach(c => c.classList.add("d-none"));
+
+                // Hiện đúng tab được chọn
+                const active = document.getElementById("tab-" + tabId);
+                if (active) active.classList.remove("d-none");
+
+                // Thêm class active vào tab đang chọn
+                document.querySelectorAll(".list-group-item[data-tab]").forEach(i => i.classList.remove("active"));
+                this.classList.add("active");
+            });
+        });
+
+
+        document.getElementById("change-password-form")?.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const oldPass = document.getElementById("curPass");
+            const newPass = document.getElementById("newPass");
+            const confirmPass = document.getElementById("cfPass");
+
+            const errorBox = document.getElementById("password-error");
+            const cfPassError = document.getElementById("cfPass-error");
+
+            // Reset lỗi
+            errorBox.textContent = "";
+            cfPassError.textContent = "";
+            confirmPass.classList.remove("is-invalid");
+
+            const oldVal = oldPass.value.trim();
+            const newVal = newPass.value.trim();
+            const confirmVal = confirmPass.value.trim();
+
+            if (!oldVal || !newVal || !confirmVal) {
+                errorBox.textContent = "Vui lòng điền đầy đủ thông tin.";
+                return;
+            }
+
+            if (newVal !== confirmVal) {
+                cfPassError.textContent = "Xác nhận mật khẩu không khớp.";
+                confirmPass.classList.add("is-invalid");
+                return;
+            }
+
+            const user = JSON.parse(sessionStorage.getItem("user"));
+            if (!user?.id) {
+                errorBox.textContent = "Không tìm thấy người dùng!";
+                return;
+            }
+
+            const data = {
+                oldPassword: oldVal,
+                newPassword: newVal
+            };
+
+            try {
+                const res = await fetch(`http://127.0.0.1:8080/customers/${user.id}/change-password`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(data)
+                });
+
+                if (!res.ok) {
+                    const msg = await res.text();
+                    errorBox.textContent = msg || "Đổi mật khẩu thất bại!";
+                    return;
+                }
+
+                errorBox.classList.remove("text-danger");
+                errorBox.classList.add("text-success");
+                errorBox.textContent = "Đổi mật khẩu thành công!";
+                document.getElementById("change-password-form").reset();
+            } catch (err) {
+                errorBox.textContent = "Lỗi kết nối đến máy chủ.";
+            }
+        });
     </script>
 
     <script src="js/jquery-1.11.0.min.js"></script>

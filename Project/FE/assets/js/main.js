@@ -54,9 +54,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   //Special offer
   const offerIds = [1, 6, 11, 16, 21, 26, 31, 36];
-  const offerProducts = await fetchProductsByIds(offerIds);
-  renderSpecialOffer(offerProducts);
+  const offerProducts = allProducts.filter(p => offerIds.includes(p.id));
+
+
+renderSpecialOffer(offerProducts);
 
   setupTabs();
-  initApp();
+  // initApp();
 });

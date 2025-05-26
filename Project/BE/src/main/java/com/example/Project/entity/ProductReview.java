@@ -40,6 +40,8 @@ public class ProductReview {
 
     private LocalDateTime createdAt;
 
+    private LocalDateTime updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

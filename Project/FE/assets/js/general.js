@@ -91,7 +91,8 @@ function initLoginForm() {
       // ✅ Tự redirect sau khi login thành công
       document.body.classList.remove("show-popup");
 
-      window.location.href = "/index.html"; // hoặc /home.html nếu bạn thích
+      // window.location.reload(); 
+      document.body.classList.remove("show-popup");
     } catch (err) {
       console.error("Lỗi khi gửi yêu cầu:", err);
       alert("Lỗi kết nối đến server.");
@@ -191,74 +192,65 @@ function renderUserHeader() {
 
   if (!user || !userAccount) return;
 
-  // Thay thế nội dung bên trong nút "user-account" bằng avatar + tên + dropdown
-  userAccount.innerHTML = `
-  <div class="user-avatar-wrap" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;position:relative;vertical-align:middle;">
-    <img src="${user.avatar}" alt="avatar" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">
-    <span style="font-size:14px;">${user.name}</span>
-    <div class="user-dropdown" style="
-      display:none;
-      position:absolute;
-      right:0;
-      top:120%;
-      background:#fff;
-      border:1px solid #ddd;
-      padding:8px 0;
-      border-radius:6px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      z-index:1000;
-      min-width:180px;
-    ">
-      <a href="/profile.html" class="dropdown-item" style="
-        display:flex;
-        align-items:center;
-        gap:8px;
-        padding:8px 16px;
-        color:#333;
-        text-decoration:none;
-        font-size:14px;
-      ">
-        <i class="icon icon-user" style="font-size:16px;"></i> Thông tin tài khoản
-      </a>
-      <a href="#" id="logoutBtn" class="dropdown-item" style="
-        display:flex;
-        align-items:center;
-        gap:8px;
-        padding:8px 16px;
-        color:#333;
-        text-decoration:none;
-        font-size:14px;
-      ">
-        <i class="icon icon-exit" style="font-size:16px;"></i> Đăng xuất
-      </a>
-    </div>
-  </div>
-`;
+  const isAdmin = user.role === "ROLE_ADMIN";
 
-  // Gắn sự kiện toggle dropdown
+  userAccount.innerHTML = `
+    <div class="user-avatar-wrap" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;position:relative;vertical-align:middle;">
+      <img src="${user.avatar || "/default-avatar.png"}" alt="avatar" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">
+      <span style="font-size:14px;">${user.name}</span>
+      <div class="user-dropdown" style="
+        display:none;
+        position:absolute;
+        right:0;
+        top:120%;
+        background:#fff;
+        border:1px solid #ddd;
+        padding:8px 0;
+        border-radius:6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index:1000;
+        min-width:180px;
+      ">
+        <a href="/profile.html" class="dropdown-item" style="display:flex;align-items:center;gap:8px;padding:8px 16px;color:#333;text-decoration:none;font-size:14px;">
+          <i class="fa-solid fa-user-tie" style="font-size:16px;"></i>Thông tin tài khoản
+        </a>
+
+        ${isAdmin ? `
+          <a href="/admin.html" class="dropdown-item" style="display:flex;align-items:center;gap:8px;padding:8px 16px;color:#333;text-decoration:none;font-size:14px;">
+            <i class="fa-brands fa-windows" style="font-size:16px;"></i> Quản lý
+          </a>` : ""}
+
+        <a href="#" id="logoutBtn" class="dropdown-item" style="display:flex;align-items:center;gap:8px;padding:8px 16px;color:#333;text-decoration:none;font-size:14px;">
+        <i class="fa-solid fa-arrow-right-from-bracket" style="font-size:16px;"></i> Đăng xuất
+        </a>
+      </div>
+    </div>
+  `;
+
+  // Toggle dropdown
   const avatarWrap = userAccount.querySelector(".user-avatar-wrap");
   const dropdown = userAccount.querySelector(".user-dropdown");
 
   avatarWrap?.addEventListener("click", (e) => {
     e.stopPropagation();
-    dropdown.style.display =
-      dropdown.style.display === "block" ? "none" : "block";
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
   });
 
-  // Đóng dropdown khi click ra ngoài
   document.addEventListener("click", (e) => {
     if (!avatarWrap.contains(e.target)) {
       dropdown.style.display = "none";
     }
   });
 
-  // Xử lý logout
   document.getElementById("logoutBtn")?.addEventListener("click", async () => {
     await fetch("/logout", { method: "POST" });
     sessionStorage.clear();
     window.location.reload();
   });
 }
+
+
+
 
 // Khởi chạy tất cả
 document.addEventListener("DOMContentLoaded", async () => {
@@ -269,4 +261,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   initRegisterForm(); // Xử lý submit form đăng ký
   initLoginForm();
   renderUserHeader();
+
 });

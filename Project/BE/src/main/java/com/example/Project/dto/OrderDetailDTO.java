@@ -24,5 +24,8 @@ public record OrderDetailDTO(
         @Min(value = 1, message = "Quantity must be at least 1")
         Integer quantity,
         @DecimalMin(value = "0.0", message = "Total must be >= 0")
-        BigDecimal total
+        BigDecimal total,
+
+        String productName,
+        String productImage
 ){}
