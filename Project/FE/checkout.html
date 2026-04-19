@@ -1,28 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Checkout – Your Store</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Chỉ giữ 1 bản Bootstrap để tránh xung đột -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
-        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css">
-    <link rel="stylesheet" type="text/css" href="/icomoon/icomoon.css">
-    <link rel="stylesheet" type="text/css" href="/assets/css/vendor.css">
-    <link rel="stylesheet" href="style.css">
 
+  <!-- Chỉ giữ 1 bản Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/icomoon/icomoon.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/vendor.css">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
-    <div id="header-placeholder"></div>
+<body>
+  <div id="header-placeholder"></div>
 
   <section class="checkout-wrap py-5">
     <div class="container">
@@ -56,30 +54,84 @@
 
         <!-- Order Summary & Payment -->
         <div class="col-lg-6">
+          <h4 class="mt-4">Shipping</h4>
+          <div class="list-group mb-2" id="shipping-method">
+            <label class="list-group-item d-flex align-items-center gap-2">
+              <input type="radio" name="shippingMethod" value="STANDARD" checked>
+              Giao tiêu chuẩn
+              <span class="ms-auto small" id="std-fee-label">18.000₫</span>
+            </label>
+            <label class="list-group-item d-flex align-items-center gap-2">
+              <input type="radio" name="shippingMethod" value="EXPRESS" disabled>
+              Hỏa tốc (≤ 15 km)
+              <span class="ms-auto small" id="exp-fee-label">Cần vị trí để tính phí</span>
+            </label>
+          </div>
+
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="useMyLocation()">Dùng vị trí của
+              tôi</button>
+            <span id="distance-label" class="small text-muted" style="display:none;"></span>
+          </div>
+
           <h4>Order Summary</h4>
-          <div id="order-summary" class="mb-4"></div>
+          <div id="order-summary" class="mb-3"></div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Voucher</label>
+            <div class="d-flex gap-2">
+              <input id="coupon-input" class="form-control" placeholder="Nhập mã voucher…">
+              <button class="btn btn-primary btn-sm" type="button" onclick="applyCouponFromInput()">Áp dụng</button>
+            </div>
+            <div class="mt-2 d-flex align-items-center gap-2">
+              <button class="btn btn-outline-secondary btn-sm" type="button" onclick="openCouponModal()">Chọn voucher có
+                sẵn</button>
+              <div id="applied-coupons" class="d-flex flex-wrap gap-2"></div>
+              <small id="applied-coupons-label" class="text-muted" style="display:none;"></small>
+            </div>
+            <div class="text-muted small mt-1">* Tối đa <b>1 giảm giá</b> + <b>1 freeship</b> áp cùng lúc.</div>
+          </div>
 
           <h4>Payment Method</h4>
           <div class="list-group mb-4">
             <label class="list-group-item">
-                <!-- value="cod" -->
-              <input type="radio" name="paymentMethod"  value="1" checked>
-              Cash on delivery
+              <input type="radio" name="paymentMethod" value="cod" checked> Cash on delivery
             </label>
             <label class="list-group-item">
-                
-              <input type="radio" name="paymentMethod" value="bank_transfer"  value="2"> 
-              Direct bank transfer
+              <input type="radio" name="paymentMethod" value="bank_transfer"> Direct bank transfer
+            </label>
+            <label class="list-group-item">
+              <input type="radio" name="paymentMethod" value="vnpay"> VNPay (ATM/QR – VND)
             </label>
           </div>
 
+          <!-- VNPay options -->
+          <div id="vnpay-info"
+            style="display:none; padding:12px; border:1px dashed #999; margin-bottom:20px; background:#f8f9fa;">
+            <div class="row g-2 align-items-center">
+              <div class="col-sm-6">
+                <label class="form-label mb-1">Phương thức trên VNPay (BankCode)</label>
+                <select id="vnpay-bank" class="form-select">
+                  <option value="">Tự chọn trên cổng VNPay (khuyến nghị)</option>
+                  <option value="VNPAYQR">VNPayQR</option>
+                  <option value="VNBANK">Thẻ nội địa (ATM)</option>
+                  <option value="INTCARD">Thẻ quốc tế (Visa/Master/JCB…)</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <small class="text-muted d-block">Sau khi tạo đơn, hệ thống chuyển bạn sang cổng VNPay sandbox để thanh
+                  toán.</small>
+              </div>
+            </div>
+          </div>
+
           <!-- Bank transfer info & QR -->
-          <div id="bank-transfer-info" style="display:none; padding:15px; border:1px dashed #999; margin-bottom:20px; background:#f8f9fa;">
+          <div id="bank-transfer-info"
+            style="display:none; padding:15px; border:1px dashed #999; margin-bottom:20px; background:#f8f9fa;">
             <p><strong>Người nhận:</strong> LE TUAN DAT</p>
             <p><strong>Số tài khoản:</strong> 0973526118 – MB</p>
-            <div id="qr-container" class="mt-3 text-center">
-              <!-- QR sẽ được tạo tại đây -->
-            </div>
+            <div id="qr-container" class="mt-3 text-center"></div>
+            <div id="qr-note" class="text-muted small mt-2" style="display:none;"></div>
           </div>
 
           <!-- Success message -->
@@ -90,48 +142,102 @@
 
           <button type="submit" class="btn btn-primary w-100">Place Order</button>
         </div>
-
       </form>
     </div>
   </section>
 
-
   <div id="footer-placeholder"></div>
   <div id="footer-bottom-placeholder"></div>
 
+  <!-- Coupon Picker Modal -->
+  <div class="modal fade" id="couponModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Chọn voucher</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="coupon-list-empty" class="text-center text-muted my-3" style="display:none;">
+            Không có voucher phù hợp. Bạn có thể nhập mã thủ công.
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>Nhóm</th>
+                  <th>Thông tin</th>
+                  <th class="text-end">Ước tính giảm</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="coupon-list-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
   <script src="js/jquery-1.11.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-        crossorigin="anonymous"></script>
-
-    <script src="js/plugins.js"></script>
-    <script src="js/script.js"></script>
-    <script src="assets/js/general.js" type="module"></script>
-
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/script.js"></script>
+  <script src="assets/js/general.js" type="module"></script>
 
   <script>
     const API = 'http://127.0.0.1:8080';
+
+    // ===== Global runtime state =====
     let currentCartId = null;
-    let currentTotalMoney = 0;
-    let currentOrderCode = '';
+    let currentTotalMoney = 0;   // luôn bám Order Summary hiện tại
+    let currentOrderCode = '';   // mã đơn / id đơn từ BE
 
-    const isLoggedIn = () => !!sessionStorage.getItem('user');
-    const showLoginPopup = () => {
-      document.body.classList.add('show-popup');
-      document.getElementById('auth-popup')?.classList.remove('show-signup');
-    };
+    let selectedShipping = 'STANDARD';
+    let customerCoord = null;  // {lat, lng}
+    let distanceKm = null;     // để preview EXPRESS & gửi cho BE khi checkout
 
-    // 1) Lấy cart, gán currentCartId
+    // ===== Helpers =====
+    const toNum = (v) => Number.isFinite(Number(v)) ? Number(v) : 0;
+    const vnd = n => (Number(n) || 0).toLocaleString('vi-VN') + '₫';
+    const isBankSelected = () => (document.querySelector('input[name="paymentMethod"]:checked')?.value === 'bank_transfer');
+
+    function chipHtml(label, code, group) {
+      const safeCode = (code || '').toString();
+      return `
+        <span class="badge bg-light text-dark border d-inline-flex align-items-center gap-2 px-2 py-1">
+          <span>${label}: <strong>${safeCode}</strong></span>
+          <button type="button" class="btn-close" aria-label="Bỏ" onclick="removeCouponGroup('${group}')"></button>
+        </span>
+      `;
+    }
+
+    // ===== FE rules preview (hiển thị tức thì) =====
+    const STANDARD_FEE = 18000;
+    function calcExpressFee(km) {
+      if (!Number.isFinite(km)) return null;
+      if (km > 15) return null;        // không hỗ trợ
+      let fee = 5000;                  // 2km đầu
+      if (km > 2) fee += Math.ceil(km - 2) * 4000; // +4k/km từ km thứ 3
+      return fee;
+    }
+    function previewShippingFee() {
+      if (selectedShipping === 'STANDARD') return STANDARD_FEE;
+      return calcExpressFee(distanceKm); // null nếu chưa có vị trí / >15km
+    }
+
+    // ===== API wrappers =====
     async function fetchCart() {
       const res = await fetch(`${API}/cart`, { credentials: 'include' });
       if (!res.ok) return null;
       const cart = await res.json();
-      currentCartId = cart.id;    // ← ID của cart hiện tại
+      currentCartId = cart.id;
       return cart;
     }
 
-    // 2) Prefill customer
+    // ===== Customer prefill =====
     async function prefillCustomer() {
       const sess = JSON.parse(sessionStorage.getItem('user') || 'null');
       let userId = sess?.id;
@@ -144,7 +250,7 @@
         const res = await fetch(`${API}/customers/${userId}`, { credentials: 'include' });
         if (!res.ok) throw '';
         const c = await res.json();
-        ['name','username','address','email','phone'].forEach(f => {
+        ['name', 'username', 'address', 'email', 'phone'].forEach(f => {
           const el = document.getElementById(f);
           if (el && c[f] != null) el.value = c[f];
         });
@@ -153,161 +259,547 @@
       }
     }
 
-    // 3) Hiển thị summary & tính total
-    async function loadOrderSummary() {
+    // ===== Location & enable EXPRESS =====
+    const SHOP_COORD = { lat: 21.028511, lng: 105.804817 };
+    function haversineKm(a, b) {
+      const toRad = d => (d * Math.PI) / 180;
+      const R = 6371;
+      const dLat = toRad(b.lat - a.lat);
+      const dLon = toRad(b.lng - a.lng);
+      const lat1 = toRad(a.lat);
+      const lat2 = toRad(b.lat);
+      const x = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(x));
+    }
+    function updateExpressAvailabilityAndLabels() {
+      const expInput = document.querySelector('input[name="shippingMethod"][value="EXPRESS"]');
+      const expLbl = document.getElementById('exp-fee-label');
+
+      const fee = calcExpressFee(distanceKm);
+      if (fee == null) {
+        expInput.disabled = true;
+        if (selectedShipping === 'EXPRESS') {
+          selectedShipping = 'STANDARD';
+          document.querySelector('input[name="shippingMethod"][value="STANDARD"]').checked = true;
+        }
+        expLbl.classList.add('text-muted');
+        expLbl.textContent = Number.isFinite(distanceKm) && distanceKm > 15 ? 'Không hỗ trợ ngoài 15 km' : 'Cần vị trí để tính phí';
+      } else {
+        expInput.disabled = false;
+        expLbl.classList.remove('text-muted');
+        expLbl.textContent = vnd(fee);
+      }
+    }
+    async function useMyLocation() {
+      if (!navigator.geolocation) { alert('Trình duyệt không hỗ trợ định vị.'); return; }
+      navigator.geolocation.getCurrentPosition(pos => {
+        customerCoord = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        distanceKm = haversineKm(SHOP_COORD, customerCoord);
+        const lbl = document.getElementById('distance-label');
+        lbl.style.display = '';
+        lbl.textContent = `Khoảng cách ước tính: ${distanceKm.toFixed(1)} km`;
+
+        updateExpressAvailabilityAndLabels();
+        loadOrderSummary(true); // refresh với preview ship mới
+      }, err => {
+        console.warn(err);
+        alert('Không lấy được vị trí.');
+      }, { enableHighAccuracy: true, timeout: 10000 });
+    }
+
+    // ====== QR helpers ======
+    function setQRNote(text) {
+      const note = document.getElementById('qr-note');
+      if (!note) return;
+      if (text) {
+        note.textContent = text;
+        note.style.display = '';
+      } else {
+        note.textContent = '';
+        note.style.display = 'none';
+      }
+    }
+
+    // amount lấy từ Order Summary (currentTotalMoney); info = currentOrderCode (bắt buộc là mã đơn)
+    function renderQR(amount, info) {
+      const bankInfo = document.getElementById('bank-transfer-info');
+      const container = document.getElementById('qr-container');
+      bankInfo.style.display = 'block';
+
+      const amt = toNum(amount);
+      const name = encodeURIComponent("LE TUAN DAT");
+      const infoEncoded = encodeURIComponent(info || '');
+      const vietQR = `https://img.vietqr.io/image/MB-0973526118-compact.png?accountName=${name}&amount=${amt}&addInfo=${infoEncoded}`;
+      const backupData = `Chuyen khoan|TK:0973526118|MB|Ten:LE TUAN DAT|Tien:${amt}VND|NoiDung:${info || ''}`;
+      const backupQR = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(backupData)}`;
+
+      container.innerHTML = `
+        <img src="${vietQR}" width="200" alt="VietQR"
+             onerror="this.style.display='none';document.getElementById('backup').style.display='block'">
+        <img id="backup" src="${backupQR}" width="200" alt="Backup QR" style="display:none">
+        <p class="mt-2"><small>Số tiền: <strong>${amt.toLocaleString('vi-VN')}₫</strong><br>
+        Nội dung: <strong>${info || ''}</strong></small></p>
+      `;
+    }
+
+    function clearQR() {
+      const container = document.getElementById('qr-container');
+      container.innerHTML = '';
+      setQRNote('');
+    }
+
+    // Lấy mã đơn nếu có thể, rồi render QR. Nếu chưa có mã => nhắc tạo đơn.
+    async function updateQRRequiredId() {
+      if (!isBankSelected()) { clearQR(); return; }
+
+      // đảm bảo khối hiển thị
+      document.getElementById('bank-transfer-info').style.display = 'block';
+
+      // nếu chưa có mã, thử gọi API lấy theo cartId (tuỳ BE có hỗ trợ hay không)
+      if (!currentOrderCode && currentCartId) {
+        try {
+          const code = await fetchOrderCode(); // /orders/{currentCartId} -> { orderCode }
+          if (code) currentOrderCode = String(code);
+        } catch {}
+      }
+
+      if (currentOrderCode) {
+        renderQR(currentTotalMoney, currentOrderCode);
+        setQRNote('');
+      } else {
+        clearQR();
+        setQRNote('Cần mã đơn hàng để tạo QR. Hãy bấm "Place Order" (Chuyển khoản ngân hàng) để hệ thống tạo mã đơn và hiển thị QR.');
+      }
+    }
+
+    // ===== Render summary từ Order (khi đã có order) =====
+    function renderSummaryFromOrder(order) {
+      if (!order) return;
+      const items = order.orderDetails || [];
+      const rows = items.map(i => `
+        <tr>
+          <td>${i.productName}</td>
+          <td class="text-end">${Number(i.quantity || 0)}</td>
+          <td class="text-end">${(Number(i.price || 0) * Number(i.quantity || 0)).toLocaleString('vi-VN')}₫</td>
+        </tr>
+      `).join('');
+
+      const sub = toNum(order.merchandiseSubtotal ?? order.subTotal);
+      const shipFee = toNum(order.shippingFee);
+      const disc = toNum(order.discountAmount);
+      const discShip = toNum(order.shippingDiscountAmount);
+      const total = toNum(order.totalMoney ?? (sub - disc + Math.max(0, shipFee - discShip)));
+
+      document.getElementById('order-summary').innerHTML = `
+        <table class="table mb-2">
+          <thead><tr><th>Product</th><th class="text-end">Qty</th><th class="text-end">Line Total</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="d-flex justify-content-between"><span>Tạm tính</span><span class="fw-semibold">${vnd(sub)}</span></div>
+        <div class="d-flex justify-content-between"><span>Phí vận chuyển</span><span class="fw-semibold">${vnd(shipFee)}</span></div>
+        ${disc > 0 ? `<div class="d-flex justify-content-between"><span>Giảm giá</span><span class="fw-semibold text-success">-${vnd(disc)}</span></div>` : ''}
+        ${discShip > 0 ? `<div class="d-flex justify-content-between"><span>Giảm phí vận chuyển</span><span class="fw-semibold text-success">-${vnd(discShip)}</span></div>` : ''}
+        <hr class="my-2">
+        <div class="d-flex justify-content-between fs-5"><span>Tổng cộng</span><span class="fw-bold">${vnd(total)}</span></div>
+      `;
+      currentTotalMoney = total; // cập nhật số tiền
+    }
+
+    // ===== Coupon helpers (hiển thị chip) =====
+    function pickCoupons(cart) {
+      const dc = cart?.discountCouponCode || cart?.discountCoupon?.code || cart?.coupon?.code || null;
+      const sc = cart?.shippingCouponCode || cart?.shippingCoupon?.code || null;
+      return { dc, sc };
+    }
+    function renderAppliedCoupons(cart) {
+      const root = document.getElementById('applied-coupons');
+      if (!root) return;
+      const { dc, sc } = pickCoupons(cart);
+      const chips = [];
+      if (dc) chips.push(chipHtml('Giảm giá', dc, 'discount'));
+      if (sc) chips.push(chipHtml('Freeship', sc, 'shipping'));
+      root.innerHTML = chips.length ? chips.join('') : '<span class="text-muted small">Chưa áp voucher</span>';
+    }
+    function showAppliedCoupons(cart) {
+      const el = document.getElementById('applied-coupons-label');
+      if (!el) return;
+      const { dc, sc } = pickCoupons(cart);
+      if (dc || sc) {
+        el.style.display = '';
+        el.textContent = `Đang áp: ${[dc, sc].filter(Boolean).join(' + ')}`;
+      } else {
+        el.style.display = 'none';
+        el.textContent = '';
+      }
+    }
+    async function removeCouponGroup() {
+      try {
+        const res = await fetch(`${API}/cart/remove-coupon`, { method: 'DELETE', credentials: 'include' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        await loadOrderSummary(true);
+      } catch (e) {
+        console.error(e);
+        alert('Gỡ voucher thất bại.');
+      }
+    }
+
+    // ===== Order Summary (có preview ship theo lựa chọn) =====
+    async function loadOrderSummary(usePreview = false) {
       const cart = await fetchCart();
       const ctn = document.getElementById('order-summary');
       if (!cart) {
         ctn.innerHTML = '<p class="text-danger">Không tải được giỏ hàng.</p>';
+        currentTotalMoney = 0;
+        clearQR();
         return;
       }
+
       const items = cart.orderDetails || [];
       if (!items.length) {
         ctn.innerHTML = '<p>Giỏ hàng trống</p>';
+        currentTotalMoney = 0;
+        clearQR();
         return;
       }
-      const sub = items.reduce((s,i) => s + i.price * i.quantity, 0);
-      const tot = Number(cart.totalMoney ?? sub);
-      currentTotalMoney = tot;
+
+      const rows = items.map(i => `
+        <tr>
+          <td>${i.productName}</td>
+          <td class="text-end">${toNum(i.quantity)}</td>
+          <td class="text-end">${vnd(toNum(i.price) * toNum(i.quantity))}</td>
+        </tr>
+      `).join('');
+
+      const sub = toNum(cart.merchandiseSubtotal);
+      const beShip = toNum(cart.shippingFee);
+      const disc = toNum(cart.discountAmount);
+      const discShipBE = toNum(cart.shippingDiscountAmount);
+
+      // === Phí ship để HIỂN THỊ ===
+      let shipForView = beShip;
+      if (usePreview) {
+        const p = previewShippingFee();
+        if (p != null) shipForView = p; // ưu tiên preview theo lựa chọn hiện tại
+      }
+
+      const discShip = Math.min(discShipBE, shipForView);
+      const finalSubtotal = Math.max(0, sub - disc);
+      const finalShip = Math.max(0, shipForView - discShip);
+      const totalView = finalSubtotal + finalShip;
+
+      currentTotalMoney = totalView; // tiền hiển thị
+
       ctn.innerHTML = `
         <table class="table mb-2">
           <thead><tr><th>Product</th><th class="text-end">Qty</th><th class="text-end">Line Total</th></tr></thead>
-          <tbody>
-            ${items.map(i => `
-              <tr>
-                <td>${i.productName}</td>
-                <td class="text-end">${i.quantity}</td>
-                <td class="text-end">${(i.price*i.quantity).toLocaleString('vi-VN')}₫</td>
-              </tr>
-            `).join('')}
-          </tbody>
+          <tbody>${rows}</tbody>
         </table>
-        <p class="fw-bold">Subtotal: ${sub.toLocaleString('vi-VN')}₫</p>
-        <p class="fw-bold">Total:    ${tot.toLocaleString('vi-VN')}₫</p>
+        <div class="d-flex justify-content-between">
+          <span>Tạm tính</span><span class="fw-semibold">${vnd(sub)}</span>
+        </div>
+        <div class="d-flex justify-content-between">
+          <span>Phí vận chuyển (${selectedShipping === 'EXPRESS' ? 'Hỏa tốc' : 'Tiêu chuẩn'})</span>
+          <span class="fw-semibold">${vnd(shipForView)}</span>
+        </div>
+        ${disc > 0 ? `<div class="d-flex justify-content-between">
+          <span>Giảm giá</span><span class="fw-semibold text-success">-${vnd(disc)}</span>
+        </div>` : ''}
+        ${discShip > 0 ? `<div class="d-flex justify-content-between">
+          <span>Giảm phí vận chuyển</span><span class="fw-semibold text-success">-${vnd(discShip)}</span>
+        </div>` : ''}
+        <hr class="my-2">
+        <div class="d-flex justify-content-between fs-5"><span>Tổng cộng (tạm tính)</span><span class="fw-bold">${vnd(totalView)}</span></div>
       `;
+
+      // Cập nhật nhãn phí cạnh radio
+      document.getElementById('std-fee-label').textContent = vnd(STANDARD_FEE);
+      updateExpressAvailabilityAndLabels();
+
+      renderAppliedCoupons(cart);
+      showAppliedCoupons(cart);
+
+      // Nếu đang chọn bank_transfer thì thử cập nhật QR (cần mã đơn)
+      if (isBankSelected()) {
+        await updateQRRequiredId();
+      }
     }
 
-    // 4) Lấy orderCode từ DB dựa vào currentCartId
+    // ===== Apply coupon =====
+    let CURRENT_USER_ID = null;
+    async function resolveUserId() {
+      const sess = JSON.parse(sessionStorage.getItem('user') || 'null');
+      let uid = sess?.id;
+      if (!uid) {
+        const cart = await fetchCart();
+        uid = cart?.customerId;
+      }
+      CURRENT_USER_ID = uid || CURRENT_USER_ID;
+      return CURRENT_USER_ID;
+    }
+
+    async function openCouponModal() {
+      await resolveUserId();
+      const tb = document.getElementById('coupon-list-body');
+      const empty = document.getElementById('coupon-list-empty');
+      tb.innerHTML = '';
+      empty.style.display = 'none';
+      try {
+        const res = await fetch(`${API}/coupons/eligible?userId=${CURRENT_USER_ID}`, { credentials: 'include' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const list = await res.json();
+        if (!list || !list.length) {
+          empty.style.display = '';
+        } else {
+          tb.innerHTML = list.map(c => `
+            <tr>
+              <td><span class="badge ${c.group === 'SHIPPING' ? 'bg-info' : 'bg-success'}">${c.group}</span></td>
+              <td>
+                <div class="fw-semibold">${c.code ? c.code : '(không cần mã)'}</div>
+                <div class="text-muted small">${c.description || ''}</div>
+                ${c.minOrderAmount ? `<div class="small text-muted">Đơn tối thiểu: ${Number(c.minOrderAmount).toLocaleString('vi-VN')}₫</div>` : ''}
+              </td>
+              <td class="text-end fw-semibold">${c.estimatedSavings ? Number(c.estimatedSavings).toLocaleString('vi-VN') + '₫' : '-'}</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-primary" type="button" onclick="applyCouponById(${c.id})">Áp dụng</button>
+              </td>
+            </tr>
+          `).join('');
+        }
+        new bootstrap.Modal(document.getElementById('couponModal')).show();
+      } catch (e) {
+        console.warn(e);
+        alert('Không lấy được danh sách voucher. Vui lòng nhập mã thủ công.');
+      }
+    }
+
+    async function applyCouponById(couponId) {
+      await resolveUserId();
+      try {
+        const res = await fetch(`${API}/coupons/apply/id?userId=${CURRENT_USER_ID}&couponId=${couponId}`, {
+          method: 'POST', credentials: 'include'
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        bootstrap.Modal.getInstance(document.getElementById('couponModal'))?.hide();
+        await loadOrderSummary(true); // sẽ tự update QR nếu đang bank_transfer
+        alert('Đã áp dụng voucher!');
+      } catch (e) {
+        console.error(e);
+        alert('Áp voucher thất bại.');
+      }
+    }
+
+    async function applyCouponFromInput() {
+      await resolveUserId();
+      const code = (document.getElementById('coupon-input').value || '').trim();
+      if (!code) return;
+      const urls = [
+        `${API}/coupons/apply/code?userId=${CURRENT_USER_ID}&code=${encodeURIComponent(code)}`,
+        `${API}/cart/apply-coupon?couponCode=${encodeURIComponent(code)}`
+      ];
+      let lastErr = '';
+      for (const url of urls) {
+        try {
+          const res = await fetch(url, { method: 'POST', credentials: 'include' });
+          if (res.ok) { await loadOrderSummary(true); alert('Đã áp dụng mã!'); return; }
+          const msg = await res.text().catch(() => '');
+          lastErr = `HTTP ${res.status}${msg ? ` – ${msg}` : ''}`;
+        } catch (e) {
+          lastErr = e?.message || String(e);
+        }
+      }
+      alert('Không áp được mã. Chi tiết: ' + lastErr);
+    }
+
+    // ===== Payment & QR =====
+    const PM_NAME_MAP = { cod: 'COD', bank_transfer: 'BANK_TRANSFER', vnpay: 'VNPAY' };
+    const TM_NAME_MAP = { STANDARD: 'STANDARD', EXPRESS: 'EXPRESS' };
+
+    async function resolvePaymentMethodIdByName(sel) {
+      const name = (PM_NAME_MAP[sel] || sel || '').toUpperCase();
+      const urls = [`${API}/payment-methods/active`, `${API}/payment-methods`, `${API}/admin/payment-methods`];
+      for (const url of urls) {
+        try {
+          const r = await fetch(url, { credentials: 'include' });
+          if (!r.ok) continue;
+          const data = await r.json();
+          const list = Array.isArray(data) ? data : (Array.isArray(data.content) ? data.content : []);
+          const hit = list.find(m => String(m.name || '').toUpperCase() === name);
+          if (hit?.id) return hit.id;
+        } catch { }
+      }
+      return null;
+    }
+
+    async function resolveTransportMethodIdByCode(code) {
+      const name = (TM_NAME_MAP[code] || code || '').toUpperCase();
+      const urls = [`${API}/transport-methods/active`, `${API}/transport-methods`, `${API}/admin/transport-methods`];
+      for (const url of urls) {
+        try {
+          const r = await fetch(url, { credentials: 'include' });
+          if (!r.ok) continue;
+          const data = await r.json();
+          const list = Array.isArray(data) ? data : (Array.isArray(data.content) ? data.content : []);
+          const hit = list.find(t =>
+            String(t.code || '').toUpperCase() === name ||
+            String(t.name || '').toUpperCase() === name
+          );
+          if (hit?.id) return hit.id;
+        } catch { }
+      }
+      return null;
+    }
+
+    // Lấy mã đơn từ cartId (nếu BE hỗ trợ)
     const fetchOrderCode = async () => {
       if (!currentCartId) throw 'Chưa có cart ID';
-      const res = await fetch(`${API}/orders/${currentCartId}`, { credentials:'include' });
+      const res = await fetch(`${API}/orders/${currentCartId}`, { credentials: 'include' });
       if (!res.ok) throw `HTTP ${res.status}`;
       const { orderCode } = await res.json();
       return orderCode;
     };
 
-    // 5) Tạo QR khi đã có currentOrderCode
-    function generateQR() {
-      const amt = currentTotalMoney;
-      const name = encodeURIComponent("LE TUAN DAT");
-      const info = encodeURIComponent(currentOrderCode);
-      const vietQR = `https://img.vietqr.io/image/MB-0973526118-compact.png?accountName=${name}&amount=${amt}&addInfo=${info}`;
-      const backupData = `Chuyen khoan|TK:0973526118|MB|Ten:LE TUAN DAT|Tien:${amt}VND|NoiDung:${info}`;
-      const backupQR = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(backupData)}`;
-      document.getElementById("qr-container").innerHTML = `
-        <img src="${vietQR}" width="200" alt="VietQR"
-             onerror="this.style.display='none';document.getElementById('backup').style.display='block'">
-        <img id="backup" src="${backupQR}" width="200" alt="Backup QR" style="display:none">
-        <p class="mt-2">
-          <small>Số tiền: <strong>${amt.toLocaleString('vi-VN')}₫</strong><br>
-          Nội dung: <strong>${info}</strong></small>
-        </p>
-      `;
-    }
-
-    // 6) Xử lý submit checkout
     async function onSubmitCheckout(e) {
-  e.preventDefault();
-  if (!isLoggedIn()) { alert('Vui lòng đăng nhập'); showLoginPopup(); return; }
+      e.preventDefault();
+      if (!sessionStorage.getItem('user')) { alert('Vui lòng đăng nhập'); return; }
 
-  const form = e.target;
-  const pm = form.paymentMethod.value;
-  const payload = {
-    nameReceiver: form.name.value,
-    address:      form.address.value,
-    email:        form.email.value,
-    phone:        form.phone.value,
-    paymentId:    pm,
-    transportId:  null,
-    notes:        null
-  };
+      const form = e.target;
+      const pmSel = form.paymentMethod.value;
+      const pmName = (PM_NAME_MAP[pmSel] || pmSel).toUpperCase();
 
-  // 1) Gửi checkout
-  let order;
-  try {
-    const res = await fetch(`${API}/cart/checkout`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`Checkout failed: ${errText || res.status}`);
+      const pmId = await resolvePaymentMethodIdByName(pmSel);
+      const tmCode = selectedShipping;
+      const tmId = await resolveTransportMethodIdByCode(tmCode);
+
+      const payload = {
+        nameReceiver: form.name.value,
+        address: form.address.value,
+        email: form.email.value,
+        phone: form.phone.value,
+
+        paymentMethodId: pmId ?? undefined,
+        paymentMethodName: pmName,
+
+        notes: null,
+
+        transportMethodId: tmId ?? undefined,
+        transportMethodCode: tmCode,
+        distanceKm: Number.isFinite(distanceKm) ? Number(distanceKm.toFixed(2)) : null
+      };
+
+      let order;
+      try {
+        const res = await fetch(`${API}/cart/checkout`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          const errText = await res.text().catch(() => '');
+          console.error('Checkout payload sent:', payload);
+          throw new Error(`Checkout failed: ${errText || res.status}`);
+        }
+        order = await res.json();
+
+        // cập nhật các biến dùng cho QR / redirect
+        currentOrderCode = order?.idOrders || order?.orderCode || String(order?.id || '');
+        const beTotal = toNum(order.totalMoney);
+        if (beTotal > 0) currentTotalMoney = beTotal;
+
+        renderSummaryFromOrder(order);
+
+        // Hiển thị thông báo thành công
+        document.getElementById('order-code-display').textContent = currentOrderCode;
+        document.getElementById('success-message').style.display = 'block';
+
+      } catch (err) {
+        console.error(err);
+        alert('Đặt hàng không thành công. Kiểm tra lại phương thức thanh toán/vận chuyển.');
+        return;
+      }
+
+      if (pmSel === 'bank_transfer') {
+        await updateQRRequiredId(); // có mã đơn rồi => vẽ QR
+        setTimeout(() => document.getElementById('bank-transfer-info')
+          .scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
+        return;
+      }
+
+      if (pmSel === 'vnpay') {
+        try {
+          const bankCode = document.getElementById('vnpay-bank')?.value || '';
+          const res = await fetch(`${API}/payments/vnpay/create`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              idOrders: currentOrderCode,
+              bankCode: bankCode || null
+            })
+          });
+
+          if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`VNPay Error: ${errorText}`);
+          }
+
+          const data = await res.json();
+          if (!data.paymentUrl) throw new Error('Missing paymentUrl from server');
+
+          window.location.href = data.paymentUrl;
+          return;
+
+        } catch (err) {
+          console.error('VNPay error:', err);
+          alert(`Không tạo được phiên VNPay: ${err.message}`);
+          return;
+        }
+      }
+
+      // COD hoặc payment method khác
+      setTimeout(() => {
+        window.location.href = `/order-confirmation.html?id=${order.id}`;
+      }, 600);
     }
-    order = await res.json();
-  } catch (err) {
-    console.error(err);
-    return alert('Đặt hàng không thành công, vui lòng thử lại.');
-  }
 
-  // 2) Lấy mã thật (nếu checkout không trả về orderCode)
-  currentOrderCode = order.orderCode
-    ? order.orderCode
-    : await fetchOrderCode(); // chỉ khi order.orderCode undefined
-
-  // 3) Activate đơn
-  try {
-    await fetch(`${API}/orders/activate/${encodeURIComponent(currentOrderCode)}`, {
-      method: 'POST',
-      credentials: 'include'
-    });
-  } catch (err) {
-    console.warn('Activate failed', err);
-  }
-
-  // 4) Hiển thị kết quả
-  document.getElementById('order-code-display').textContent = currentOrderCode;
-  document.getElementById('success-message').style.display = 'block';
-
-  if (pm === 'bank_transfer') {
-    generateQR();
-    setTimeout(() =>
-      document.getElementById("bank-transfer-info")
-              .scrollIntoView({ behavior:'smooth', block:'center' }),
-    50);
-  } else {
-    setTimeout(() => {
-      window.location.href = `/order-confirmation.html?id=${order.id}`;
-    }, 1500);
-  }
-}
-
-
-    // 7) Hiển thị preview QR khi đổi phương thức
-    function handlePaymentMethodChange() {
+    // ===== Events =====
+    function handleShippingMethodChange() {
+      const sel = document.querySelector('input[name="shippingMethod"]:checked')?.value || 'STANDARD';
+      selectedShipping = sel;
+      loadOrderSummary(true); // refresh với phí ship theo lựa chọn
+    }
+    async function handlePaymentMethodChange() {
       const sel = document.querySelector('input[name="paymentMethod"]:checked').value;
-      const info = document.getElementById("bank-transfer-info");
+      const bankInfo = document.getElementById("bank-transfer-info");
+      const vnpInfo = document.getElementById("vnpay-info");
+
+      bankInfo.style.display = (sel === 'bank_transfer') ? 'block' : 'none';
+      vnpInfo.style.display = (sel === 'vnpay') ? 'block' : 'none';
+
       if (sel === 'bank_transfer') {
-        info.style.display = 'block';
-        // trước khi đặt hàng, fetch orderCode rồi preview QR
-        fetchOrderCode()
-          .then(code => { currentOrderCode = code; generateQR(); })
-          .catch(() => { /* nếu chưa có orderCode thì bỏ qua */ });
+        await updateQRRequiredId(); // chỉ render khi có mã đơn
       } else {
-        info.style.display = 'none';
+        clearQR();
       }
     }
 
-    // Khởi chạy khi load
     document.addEventListener("DOMContentLoaded", async () => {
-      await loadOrderSummary();
-      await prefillCustomer();
       document.getElementById('checkout-form').addEventListener('submit', onSubmitCheckout);
-      document.querySelectorAll('input[name="paymentMethod"]')
-              .forEach(r => r.addEventListener('change', handlePaymentMethodChange));
-      handlePaymentMethodChange();
+
+      document.querySelectorAll('input[name="paymentMethod"]').forEach(r =>
+        r.addEventListener('change', () => { handlePaymentMethodChange(); })
+      );
+
+      document.querySelectorAll('input[name="shippingMethod"]').forEach(r =>
+        r.addEventListener('change', handleShippingMethodChange)
+      );
+
+      await handlePaymentMethodChange();
+      updateExpressAvailabilityAndLabels();   // lần đầu
+      await loadOrderSummary(true);           // hiển thị với STANDARD = 18k
+      await prefillCustomer();
     });
   </script>
 </body>
+
 </html>

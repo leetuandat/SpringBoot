@@ -262,6 +262,11 @@
                 </div>
             </div>
             <div class="nav-item">
+                <div class="nav-link" data-section="coupons">
+                    <i class="fas fa-ticket-alt me-2"></i> Mã giảm giá
+                </div>
+            </div>
+            <div class="nav-item">
                 <div class="nav-link" data-section="customers">
                     <i class="fas fa-users me-2"></i> Người dùng
                 </div>
@@ -462,6 +467,67 @@
             </div>
         </div>
 
+        <!-- Coupons Section -->
+        <div id="coupons-section" class="content-section">
+            <div class="section-header">
+                <h4 style="color: white;"><i class="fas fa-ticket-alt me-2"></i> Quản Lý Coupon/Voucher</h4>
+                <button class="btn btn-success-custom btn-custom" onclick="openCouponModal()">
+                    <i class="fas fa-plus me-1"></i> Tạo coupon
+                </button>
+            </div>
+
+            <div class="search-filters">
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <input id="couponSearch" class="form-control" placeholder="Tìm theo mã / mô tả...">
+                    </div>
+                    <div class="col-md-3">
+                        <select id="couponTypeFilter" class="form-select">
+                            <option value="">Loại (tất cả)</option>
+                            <option value="PERCENT">PERCENT</option>
+                            <option value="FIXED">FIXED</option>
+                            <option value="SHIPPING_DISCOUNT">SHIPPING_DISCOUNT</option>
+                            <option value="FREE_SHIPPING">FREE_SHIPPING</option>
+                            <option value="CASHBACK_COINS">CASHBACK_COINS</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary-custom btn-custom w-100" onclick="filterCoupons()">
+                            <i class="fas fa-search"></i> Lọc
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-warning-custom btn-custom w-100" onclick="loadCoupons()">
+                            <i class="fas fa-rotate"></i> Tải lại
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Code</th>
+                                <th>Type</th>
+                                <th>Scope</th>
+                                <th>Thời gian</th>
+                                <th>Điều kiện</th>
+                                <th>Giới hạn</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="couponsTableBody">
+                            <!-- rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- Customers Section -->
         <div id="customers-section" class="content-section">
             <div class="section-header">
@@ -592,6 +658,138 @@
         </div>
     </div>
 
+    <!-- Coupon Modal -->
+    <div class="modal fade" id="couponModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="couponModalTitle">Tạo coupon</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="couponForm">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">CodeType *</label>
+                                <select id="couponCodeType" class="form-select" required>
+                                    <option value="SINGLE">SINGLE</option>
+                                    <option value="UNIQUE_POOL">UNIQUE_POOL</option>
+                                    <option value="AUTO_APPLY">AUTO_APPLY</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3" id="couponCodeWrap">
+                                <label class="form-label">Code</label>
+                                <input id="couponCode" class="form-control" placeholder="VD: SALE10">
+                                <small class="text-muted">Bắt buộc nếu CodeType=SINGLE</small>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Type *</label>
+                                <select id="couponType" class="form-select" required>
+                                    <option value="PERCENT">PERCENT</option>
+                                    <option value="FIXED">FIXED</option>
+                                    <option value="SHIPPING_DISCOUNT">SHIPPING_DISCOUNT</option>
+                                    <option value="FREE_SHIPPING">FREE_SHIPPING</option>
+                                    <option value="CASHBACK_COINS">CASHBACK_COINS</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Scope *</label>
+                                <select id="couponScope" class="form-select" required>
+                                    <option value="PLATFORM">PLATFORM</option>
+                                    <!-- <option value="SHOP">SHOP</option> -->
+                                </select>
+                            </div>
+
+                            <div class="col-md-3" id="couponShopWrap" style="display:none;">
+                                <label class="form-label">Shop ID</label>
+                                <input id="couponShopId" type="number" min="1" class="form-control"
+                                    placeholder="VD: 123">
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label">Bắt đầu *</label>
+                                <input id="couponStartAt" type="datetime-local" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Kết thúc *</label>
+                                <input id="couponEndAt" type="datetime-local" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label">Giá trị giảm</label>
+                                <input id="couponDiscountValue" type="number" step="0.01" class="form-control"
+                                    placeholder="% hoặc tiền">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Trần giảm</label>
+                                <input id="couponMaxDiscount" type="number" step="0.01" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Đơn tối thiểu</label>
+                                <input id="couponMinOrder" type="number" step="0.01" class="form-control">
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label">Limit tổng</label>
+                                <input id="couponUsageLimitTotal" type="number" min="0" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Limit mỗi user</label>
+                                <input id="couponUsageLimitPerUser" type="number" min="0" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Ngân sách trần</label>
+                                <input id="couponBudgetCap" type="number" step="0.01" class="form-control">
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label">Mô tả</label>
+                                <input id="couponDescription" class="form-control">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Sản phẩm áp dụng</label>
+                                <select id="couponProducts" class="form-select" multiple size="6"></select>
+                                <small class="text-muted">Giữ Ctrl/Command để chọn nhiều</small>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Danh mục áp dụng</label>
+                                <select id="couponCategories" class="form-select" multiple size="6"></select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Phương thức thanh toán</label>
+                                <select id="couponPaymentMethods" class="form-select" multiple size="6"></select>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="row g-3">
+                                    <div class="col-md-3 form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="couponActive" checked>
+                                        <label class="form-check-label" for="couponActive">Kích hoạt</label>
+                                    </div>
+                                    <div class="col-md-3 form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="couponNewUserOnly">
+                                        <label class="form-check-label" for="couponNewUserOnly">Chỉ user mới</label>
+                                    </div>
+                                    <div class="col-md-3 form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="couponFirstOrderOnly">
+                                        <label class="form-check-label" for="couponFirstOrderOnly">Chỉ đơn đầu</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary-custom btn-custom" onclick="saveCoupon()">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Category Modal -->
     <div class="modal fade" id="categoryModal" tabindex="-1">
@@ -705,10 +903,21 @@
         // ==================== HELPER FUNCTIONS ====================
         // 1) Hàm trả về nguyên Page object
         async function fetchPageObject(url) {
-            const res = await fetch(url);
-            if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+            const res = await fetch(url, {
+                credentials: 'include',                 // <-- QUAN TRỌNG
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+            }
+            const ct = res.headers.get('content-type') || '';
+            if (!ct.includes('application/json')) {
+                // thường là bị 302 -> /login trả về HTML
+                throw new Error('Response is not JSON (maybe redirected to /login)');
+            }
             return res.json();
         }
+
 
         // 2) Hàm chỉ lấy content[] (dùng để load list)
         async function fetchPageContent(url) {
@@ -1497,6 +1706,337 @@
             }
         }
 
+        /* ==================== COUPONS ==================== */
+        let couponsList = [];
+
+        const COUPON_API = `${API}/coupons`;
+
+        function fmtDateTime(dt) {
+            try { return new Date(dt).toLocaleString('vi-VN'); } catch { return dt || ''; }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const scopeSel = document.getElementById('couponScope');
+            const shopWrap = document.getElementById('couponShopWrap');
+            if (scopeSel) { scopeSel.value = 'PLATFORM'; scopeSel.disabled = true; }
+            if (shopWrap) shopWrap.style.display = 'none';
+        });
+
+        async function loadCoupons() {
+            try {
+                const page = await fetchPageObject(`${COUPON_API}?page=0&size=1000`);
+                couponsList = page.content || [];
+            } catch (e) {
+                console.warn('GET /coupons error:', e);
+                couponsList = [];
+            }
+            renderCoupons(couponsList);
+        }
+
+        function renderCoupons(list) {
+            const tbody = q('#couponsTableBody');
+            if (!tbody) return;
+
+            if (!list || list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-muted">Chưa có coupon</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = list.map(c => {
+                const time = `${fmtDateTime(c.startAtUtc)} → ${fmtDateTime(c.endAtUtc)}`;
+                const cond = `
+      Min: ${(c.minOrderAmount ?? 0).toLocaleString('vi-VN')}
+      ${c.maxDiscountValue ? (' · Trần: ' + Number(c.maxDiscountValue).toLocaleString('vi-VN')) : ''}`;
+                const limit = `
+      Tổng: ${c.usageLimitTotal ?? '∞'} · /User: ${c.usageLimitPerUser ?? '∞'}`;
+                const statusBadge = c.isActive
+                    ? '<span class="badge bg-success">Kích hoạt</span>'
+                    : '<span class="badge bg-secondary">Tắt</span>';
+
+                return `
+                    <tr>
+                        <td>${c.id}</td>
+                        <td>${c.code ?? '-'}</td>
+                        <td>
+                        <div><span class="badge bg-info">${c.type}</span></div>
+                        <small class="text-muted">${c.codeType}</small>
+                        </td>
+                        <td>PLATFORM</td>
+                        <td>${time}</td>
+                        <td>${cond}</td>
+                        <td>${limit}</td>
+                        <td>${statusBadge}</td>
+                        <td class="d-flex gap-1">
+                        <button class="btn btn-sm btn-warning" onclick="editCoupon(${c.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm ${c.isActive ? 'btn-secondary' : 'btn-success'}"
+                                onclick="toggleCouponActive(${c.id}, ${c.isActive})">
+                            ${c.isActive ? 'Tắt' : 'Bật'}
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCoupon(${c.id})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+            }).join('');
+        }
+
+        function filterCoupons() {
+            const kw = (q('#couponSearch')?.value || '').trim().toLowerCase();
+            const t = q('#couponTypeFilter')?.value || '';
+            const filtered = couponsList.filter(c => {
+                const okKw = !kw || (c.code || '').toLowerCase().includes(kw) || (c.description || '').toLowerCase().includes(kw);
+                const okT = !t || c.type === t;
+                return okKw && okT;
+            });
+            renderCoupons(filtered);
+        }
+
+        /* ========= Modal & form logic ========= */
+        let pmLoaded = false, prodLoaded = false, cateLoaded = false;
+
+        async function loadCouponRelations() {
+            // products
+            if (!prodLoaded) {
+                try {
+                    const page = await fetchPageObject(`${API}/products?page=0&size=1000`);
+                    const list = page.content || [];
+                    const sel = q('#couponProducts'); sel.innerHTML = '';
+                    list.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = p.id; opt.textContent = `#${p.id} — ${p.name}`;
+                        sel.appendChild(opt);
+                    });
+                    prodLoaded = true;
+                } catch (e) { console.warn('Không load được products:', e); }
+            }
+            // categories
+            if (!cateLoaded) {
+                try {
+                    const page = await fetchPageObject(`${API}/categories?page=0&size=1000`);
+                    const list = page.content || [];
+                    const sel = q('#couponCategories'); sel.innerHTML = '';
+                    list.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id; opt.textContent = `#${c.id} — ${c.name}`;
+                        sel.appendChild(opt);
+                    });
+                    cateLoaded = true;
+                } catch (e) { console.warn('Không load được categories:', e); }
+            }
+            // payment methods
+            if (!pmLoaded) {
+                try {
+                    const page = await fetchPageObject(`${API}/payment-methods?page=0&size=1000`);
+                    const list = page.content || [];
+                    const sel = q('#couponPaymentMethods'); sel.innerHTML = '';
+                    list.forEach(pm => {
+                        const opt = document.createElement('option');
+                        opt.value = pm.id;
+                        opt.textContent = `#${pm.id} — ${pm.name || pm.methodName || 'Payment'}`;
+                        sel.appendChild(opt);
+                    });
+                    pmLoaded = true;
+                } catch (e) { console.warn('Không load được payment methods:', e); }
+            }
+        }
+
+        function openCouponModal() {
+            const form = q('#couponForm');
+            form.reset();
+            q('#couponModalTitle').textContent = 'Tạo coupon';
+            q('#couponCodeType').value = 'SINGLE';
+            q('#couponType').value = 'PERCENT';
+            if (q('#couponScope')) { q('#couponScope').value = 'PLATFORM'; q('#couponScope').disabled = true; }
+            if (q('#couponShopWrap')) q('#couponShopWrap').style.display = 'none';
+            q('#couponCodeWrap').style.display = 'block';
+            q('#couponActive').checked = true;
+
+            // default time: now -> +30d (local -> ISO)
+            const now = new Date();
+            const plus30 = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+            q('#couponStartAt').value = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            q('#couponEndAt').value = new Date(plus30.getTime() - plus30.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+
+            // wire codeType show/hide code input
+            q('#couponCodeType').onchange = () => {
+                const isSingle = q('#couponCodeType').value === 'SINGLE';
+                q('#couponCodeWrap').style.display = isSingle ? 'block' : 'none';
+            };
+
+            loadCouponRelations();
+
+            // xoá id edit nếu có
+            q('#couponForm').dataset.editId = '';
+
+            const modal = new bootstrap.Modal(document.getElementById('couponModal'));
+            modal.show();
+        }
+
+        async function editCoupon(id) {
+            try {
+                const res = await fetch(`${COUPON_API}/${id}`, { credentials: 'include' });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const c = await res.json();
+
+                loadCouponRelations(); // không chờ vẫn ok
+
+                q('#couponForm').reset();
+                q('#couponModalTitle').textContent = `Sửa coupon #${id}`;
+                q('#couponForm').dataset.editId = id;
+
+                q('#couponCodeType').value = c.codeType || 'SINGLE';
+                q('#couponCodeWrap').style.display = (c.codeType === 'SINGLE') ? 'block' : 'none';
+                q('#couponCode').value = c.code || '';
+
+                q('#couponType').value = c.type || 'PERCENT';
+                if (q('#couponScope')) { q('#couponScope').value = 'PLATFORM'; q('#couponScope').disabled = true; }
+                if (q('#couponShopWrap')) q('#couponShopWrap').style.display = 'none';
+
+                // datetime-local expects local; convert from ISO
+                const s = c.startAtUtc ? new Date(c.startAtUtc) : null;
+                const e = c.endAtUtc ? new Date(c.endAtUtc) : null;
+                if (s) q('#couponStartAt').value = new Date(s.getTime() - s.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+                if (e) q('#couponEndAt').value = new Date(e.getTime() - e.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+
+                q('#couponDescription').value = c.description || '';
+
+                q('#couponDiscountValue').value = c.discountValue ?? '';
+                q('#couponMaxDiscount').value = c.maxDiscountValue ?? '';
+                q('#couponMinOrder').value = c.minOrderAmount ?? '';
+
+                q('#couponUsageLimitTotal').value = c.usageLimitTotal ?? '';
+                q('#couponUsageLimitPerUser').value = c.usageLimitPerUser ?? '';
+                q('#couponBudgetCap').value = c.budgetCap ?? '';
+
+                q('#couponActive').checked = !!c.isActive;
+                q('#couponNewUserOnly').checked = !!c.newUserOnly;
+                q('#couponFirstOrderOnly').checked = !!c.firstOrderOnly;
+
+                // set multi selects (after relations loaded)
+                setTimeout(() => {
+                    selectMulti('#couponProducts', c.productIds || []);
+                    selectMulti('#couponCategories', c.categoryIds || []);
+                    selectMulti('#couponPaymentMethods', c.paymentMethodIds || []);
+                }, 200);
+
+                new bootstrap.Modal(document.getElementById('couponModal')).show();
+            } catch (e) {
+                console.error(e);
+                alert('Không tải được coupon.');
+            }
+        }
+
+        function selectMulti(selQuery, ids) {
+            const sel = q(selQuery);
+            if (!sel) return;
+            const set = new Set(ids.map(Number));
+            Array.from(sel.options).forEach(o => o.selected = set.has(Number(o.value)));
+        }
+
+        function getMultiSelectIds(sel) {
+            return Array.from(sel.selectedOptions || []).map(o => +o.value).filter(Boolean);
+        }
+
+        function toISO(dtLocal) {
+            if (!dtLocal) return null;
+            const d = new Date(dtLocal);
+            return d.toISOString();
+        }
+
+        async function saveCoupon() {
+            const btn = q('#couponModal .btn-primary-custom');
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+
+            try {
+                const codeType = q('#couponCodeType').value;
+                const payload = {
+                    codeType,
+                    code: codeType === 'SINGLE' ? (q('#couponCode').value || '').trim() : null,
+                    type: q('#couponType').value,
+
+                    startAtUtc: toISO(q('#couponStartAt').value),
+                    endAtUtc: toISO(q('#couponEndAt').value),
+                    description: (q('#couponDescription').value || '').trim(),
+
+                    discountValue: q('#couponDiscountValue').value ? +q('#couponDiscountValue').value : null,
+                    maxDiscountValue: q('#couponMaxDiscount').value ? +q('#couponMaxDiscount').value : null,
+                    minOrderAmount: q('#couponMinOrder').value ? +q('#couponMinOrder').value : null,
+                    usageLimitTotal: q('#couponUsageLimitTotal').value ? +q('#couponUsageLimitTotal').value : null,
+                    usageLimitPerUser: q('#couponUsageLimitPerUser').value ? +q('#couponUsageLimitPerUser').value : null,
+                    budgetCap: q('#couponBudgetCap').value ? +q('#couponBudgetCap').value : null,
+
+                    newUserOnly: q('#couponNewUserOnly').checked,
+                    firstOrderOnly: q('#couponFirstOrderOnly').checked,
+                    productIds: getMultiSelectIds(q('#couponProducts')),
+                    categoryIds: getMultiSelectIds(q('#couponCategories')),
+                    paymentMethodIds: getMultiSelectIds(q('#couponPaymentMethods')),
+                    isActive: q('#couponActive').checked
+                };
+
+                // FE validate cơ bản
+                if (!payload.startAtUtc || !payload.endAtUtc) {
+                    alert('Vui lòng chọn thời gian bắt đầu/kết thúc'); throw new Error('invalid');
+                }
+                if (codeType === 'SINGLE' && !payload.code) {
+                    alert('CodeType=SINGLE cần nhập Code'); throw new Error('invalid');
+                }
+
+                const editId = q('#couponForm').dataset.editId;
+                const method = editId ? 'PUT' : 'POST';
+                const url = editId ? `${COUPON_API}/${editId}` : COUPON_API;
+
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) {
+                    const txt = await res.text();
+                    throw new Error(`HTTP ${res.status}: ${txt}`);
+                }
+
+                alert(editId ? '✅ Cập nhật coupon thành công!' : '✅ Tạo coupon thành công!');
+                const modalEl = document.getElementById('couponModal');
+                bootstrap.Modal.getInstance(modalEl)?.hide();
+
+                await loadCoupons();
+            } catch (e) {
+                if (e.message !== 'invalid') {
+                    console.error(e);
+                    alert('❌ Lưu coupon thất bại: ' + e.message);
+                }
+            } finally {
+                btn.disabled = false; btn.innerHTML = 'Lưu';
+            }
+        }
+
+        // POST /coupons/{id}/activate | /deactivate
+        async function toggleCouponActive(id, isActiveNow) {
+            const next = !isActiveNow;
+            const res = await fetch(`${API}/coupons/${id}/activate?active=${next}`, {
+                method: 'PATCH',
+                credentials: 'include'
+            });
+            if (!res.ok) {
+                alert(`Không đổi trạng thái được (HTTP ${res.status}).`);
+                return;
+            }
+            await loadCoupons();
+        }
+
+
+        // DELETE /coupons/{id}
+        async function deleteCoupon(id) {
+            if (!confirm('Xoá coupon này?')) return;
+            try {
+                const res = await fetch(`${COUPON_API}/${id}`, { method: 'DELETE', credentials: 'include' });
+                if (!res.ok && res.status !== 204) throw new Error(`HTTP ${res.status}`);
+                await loadCoupons();
+            } catch (e) {
+                console.error(e);
+                alert('Không xoá được coupon.');
+            }
+        }
+
         // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🚀 Khởi tạo ứng dụng...');
@@ -1510,7 +2050,8 @@
                 loadProducts(),
                 loadCategories(),
                 loadOrders(),
-                loadCustomers()
+                loadCustomers(),
+                loadCoupons()
             ]).then(() => {
                 console.log('✅ Đã tải xong tất cả dữ liệu');
                 q('#lastUpdate').textContent = new Date().toLocaleString('vi-VN');
