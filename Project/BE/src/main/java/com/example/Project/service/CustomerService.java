@@ -10,6 +10,7 @@
 package com.example.Project.service;
 
 import com.example.Project.dto.CustomerDTO;
+import com.example.Project.entity.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,4 +23,7 @@ public interface CustomerService {
     CustomerDTO update(Long id, CustomerDTO dto);
     void delete(Long id);
     Page<CustomerDTO> findByCustomerName(String keyword, Pageable pageable);
+    Customer createPending(String email, String rawPassword, String fullName);
+    void markEmailVerified(String email);
+    CustomerDTO registerWithOtp(CustomerDTO dto);
 }

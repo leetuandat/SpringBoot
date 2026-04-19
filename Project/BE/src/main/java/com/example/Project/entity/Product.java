@@ -21,7 +21,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PRODUCT")
+@Table(name = "PRODUCT",
+        uniqueConstraints = @UniqueConstraint(name="uk_product_name", columnNames = "name"))
 
 public class Product {
 
@@ -29,7 +30,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 500)
+    @Column(length = 500, unique = true)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)

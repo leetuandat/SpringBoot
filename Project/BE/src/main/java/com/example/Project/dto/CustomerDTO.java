@@ -27,5 +27,6 @@ public record CustomerDTO(
         String avatar,
 //        @NotNull(message = "isActive cannot be null")
         Boolean isActive,
-        String role
+        String role,
+        Boolean emailVerified
 ){}

@@ -11,6 +11,7 @@ package com.example.Project.controller;
 
 import com.example.Project.dto.OrderDTO;
 import com.example.Project.dto.OrderDetailDTO;
+import com.example.Project.dto.ShippingOptionDTO;
 import com.example.Project.repository.CustomerRepository;
 import com.example.Project.service.CartService;
 import jakarta.persistence.EntityNotFoundException;
@@ -124,6 +125,12 @@ public class CartController {
         return ResponseEntity.ok(total);
     }
 
+    @GetMapping("/shipping-options")
+    public ResponseEntity<List<ShippingOptionDTO>> shippingOptions(
+            @RequestParam(required = false, name = "distanceKm") Double distanceKm) {
+        return ResponseEntity.ok(cartService.getShippingOptions(distanceKm));
+    }
+
     /**
      * Áp dụng mã giảm giá (nếu có)
      */
@@ -159,34 +166,13 @@ public class CartController {
      * Chuyển giỏ hàng thành đơn hàng chính thức
      */
     @PostMapping("/checkout")
-    public ResponseEntity<OrderDTO> checkout(@RequestBody CheckoutRequest checkoutRequest,
+    public ResponseEntity<OrderDTO> checkout(@Valid @RequestBody CheckoutRequest checkoutRequest,
                                              Authentication authentication) {
         Long userId = getUserIdFromAuth(authentication);
         OrderDTO order = cartService.checkout(userId, checkoutRequest);
         return ResponseEntity.ok(order);
     }
 
-    /**
-     * Lưu giỏ hàng để mua sau (wishlist)
-     */
-    @PostMapping("/save-for-later/{itemId}")
-    public ResponseEntity<Void> saveForLater(@PathVariable Long itemId,
-                                             Authentication authentication) {
-        Long userId = getUserIdFromAuth(authentication);
-        cartService.saveForLater(userId, itemId);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * Chuyển sản phẩm từ "mua sau" về giỏ hàng
-     */
-    @PostMapping("/move-to-cart/{itemId}")
-    public ResponseEntity<OrderDetailDTO> moveToCart(@PathVariable Long itemId,
-                                                     Authentication authentication) {
-        Long userId = getUserIdFromAuth(authentication);
-        OrderDetailDTO movedItem = cartService.moveToCart(userId, itemId);
-        return ResponseEntity.ok(movedItem);
-    }
 
     /**
      * Helper method để lấy userId từ Authentication
@@ -202,12 +188,10 @@ public class CartController {
         if (principal instanceof UserPrincipal) {
             // Nếu bạn đã customize UserDetails để bao gồm id
             return ((UserPrincipal) principal).getId();
-        }
-        else if (principal instanceof UserDetails) {
+        } else if (principal instanceof UserDetails) {
             // Lấy username từ Spring Security UserDetails
             username = ((UserDetails) principal).getUsername();
-        }
-        else {
+        } else {
             throw new RuntimeException("Invalid user principal type: " + principal.getClass());
         }
 
@@ -219,10 +203,9 @@ public class CartController {
 
     @GetMapping("/test-auth")
     public ResponseEntity<String> testAuth(Authentication authentication) {
-        if(authentication == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
+        if (authentication == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
         return ResponseEntity.ok("UserId: " + getUserIdFromAuth(authentication));
     }
-
 
 
     /**
@@ -237,61 +220,25 @@ public class CartController {
         private Long transportMethodId;
         private String notes;
 
-        // Getters và setters
-        public String getNameReceiver() {
-            return nameReceiver;
-        }
+        // FE có thể gửi – BE dùng để tính ship; nếu null thì BE tự fallback
+        private Double distanceKm;
 
-        public void setNameReceiver(String nameReceiver) {
-            this.nameReceiver = nameReceiver;
-        }
-
-        public String getAddress() {
-            return address;
-        }
-
-        public void setAddress(String address) {
-            this.address = address;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-
-        public void setPhone(String phone) {
-            this.phone = phone;
-        }
-
-        public Long getPaymentMethodId() {
-            return paymentMethodId;
-        }
-
-        public void setPaymentMethodId(Long paymentMethodId) {
-            this.paymentMethodId = paymentMethodId;
-        }
-
-        public Long getTransportMethodId() {
-            return transportMethodId;
-        }
-
-        public void setTransportMethodId(Long transportMethodId) {
-            this.transportMethodId = transportMethodId;
-        }
-
-        public String getNotes() {
-            return notes;
-        }
-
-        public void setNotes(String notes) {
-            this.notes = notes;
-        }
+        public String getNameReceiver() { return nameReceiver; }
+        public void setNameReceiver(String nameReceiver) { this.nameReceiver = nameReceiver; }
+        public String getAddress() { return address; }
+        public void setAddress(String address) { this.address = address; }
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+        public String getPhone() { return phone; }
+        public void setPhone(String phone) { this.phone = phone; }
+        public Long getPaymentMethodId() { return paymentMethodId; }
+        public void setPaymentMethodId(Long paymentMethodId) { this.paymentMethodId = paymentMethodId; }
+        public Long getTransportMethodId() { return transportMethodId; }
+        public void setTransportMethodId(Long transportMethodId) { this.transportMethodId = transportMethodId; }
+        public String getNotes() { return notes; }
+        public void setNotes(String notes) { this.notes = notes; }
+        public Double getDistanceKm() { return distanceKm; }
+        public void setDistanceKm(Double distanceKm) { this.distanceKm = distanceKm; }
     }
+
 }

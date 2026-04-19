@@ -15,8 +15,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.*;
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -40,8 +39,11 @@ public class Customer {
     @Column(length = 500)
     private String address;
 
-    @Column(length = 150)
+    @Column(length = 150, unique = true)
     private String email;
+
+    @Column(nullable = false)
+    boolean emailVerified = false;
 
     @Column(length = 50)
     private String phone;
@@ -78,6 +80,7 @@ public class Customer {
         if (this.isActive == null) {
             this.isActive = true;
         }
+        
     }
 
     @PreUpdate

@@ -12,6 +12,7 @@ package com.example.Project.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,6 +31,9 @@ public class TransportMethod {
 
     @Column(length = 250)
     private String name;
+
+    @Column(precision = 19, scale = 2)
+    private BigDecimal price;
 
     @Lob
     private String notes;

@@ -9,6 +9,8 @@
 
 package com.example.Project.controller;
 
+import com.example.Project.auth.dto.OtpVerifyRequest;
+import com.example.Project.auth.dto.ResendOtpRequest;
 import com.example.Project.dto.ChangePasswordRequest;
 import com.example.Project.dto.CustomerDTO;
 import com.example.Project.dto.CustomerUpdateDTO;
@@ -16,6 +18,7 @@ import com.example.Project.entity.Customer;
 import com.example.Project.mapper.CustomerMapper;
 import com.example.Project.repository.CustomerRepository;
 import com.example.Project.service.CustomerService;
+import com.example.Project.service.impl.OtpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,6 +40,7 @@ public class CustomerController {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
     private final PasswordEncoder passwordEncoder;
+    private final OtpService otpService;
 
     @GetMapping
     public ResponseEntity<Page<CustomerDTO>> findAll(Pageable pageable) {
@@ -50,9 +54,21 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomerDTO> save(@RequestBody CustomerDTO customerDTO) {
-        CustomerDTO createdCustomer = customerService.save(customerDTO);
+    public ResponseEntity<CustomerDTO> save(@RequestBody @Valid CustomerDTO customerDTO) {
+        CustomerDTO createdCustomer = customerService.registerWithOtp(customerDTO); // 🔁 thay vì save cũ
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCustomer);
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody @Valid OtpVerifyRequest req) {
+        otpService.verifyRegisterOtp(req.getEmail(), req.getCode());
+        return ResponseEntity.ok("Kích hoạt tài khoản thành công.");
+    }
+
+    @PostMapping("/otp/resend")
+    public ResponseEntity<?> resendOtp(@RequestBody @Valid ResendOtpRequest req) {
+        otpService.resendRegisterOtp(req.getEmail());
+        return ResponseEntity.ok("Đã gửi lại mã OTP.");
     }
 
     @PutMapping("/{id}")

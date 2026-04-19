@@ -1,8 +1,10 @@
+// src/main/java/com/example/Project/service/CartService.java
 package com.example.Project.service;
 
 import com.example.Project.controller.CartController.CheckoutRequest;
 import com.example.Project.dto.OrderDTO;
 import com.example.Project.dto.OrderDetailDTO;
+import com.example.Project.dto.ShippingOptionDTO;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -36,4 +38,7 @@ public interface CartService {
     void saveForLater(Long userId, Long itemId);
 
     OrderDetailDTO moveToCart(Long userId, Long itemId);
+
+    List<ShippingOptionDTO> getShippingOptions(Double distanceKm);
+
 }

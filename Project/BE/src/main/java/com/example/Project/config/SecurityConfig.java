@@ -61,13 +61,22 @@ public class SecurityConfig {
                         .requestMatchers("/categories/**", "/author/**", "/authors/**").permitAll()
                         .requestMatchers("/news/**", "/reviews/**").permitAll()
                         .requestMatchers("/customers/**", "/orders/**", "/cart/**").permitAll()
+                        .requestMatchers("/coupons/**").permitAll()
+
+                        .requestMatchers("/customers", "/customers/verify-otp", "/customers/otp/resend").permitAll()
+                        .requestMatchers("/auth/register", "/auth/verify-otp", "/auth/otp/resend").permitAll()
 
                         // Admin endpoints
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-
+                        .requestMatchers("/payments/vnpay/**", "/auth/**", "/public/**").permitAll()
                         // Require authentication for others
                         .anyRequest().authenticated()
+                )
+                .logout(l -> l
+                        .logoutUrl("/logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID") // xoá cookie session
                 )
                 .formLogin(form -> form
                         .loginProcessingUrl("/login")

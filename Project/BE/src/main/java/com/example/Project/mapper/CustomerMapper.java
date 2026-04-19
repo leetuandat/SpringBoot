@@ -20,6 +20,7 @@ public interface CustomerMapper {
     @Mapping(source = "entity.avatar", target = "avatar")
     @Mapping(source = "entity.role", target = "role")
     @Mapping(source = "entity.isActive", target = "isActive")
+    @Mapping(target = "emailVerified", source = "emailVerified")
     CustomerDTO toDto(Customer entity);
 
     // Chuyển từ DTO sang entity
@@ -31,6 +32,7 @@ public interface CustomerMapper {
     @Mapping(source = "dto.avatar", target = "avatar")
     @Mapping(source = "dto.role", target = "role")
     @Mapping(source = "dto.isActive", target = "isActive")
+    @Mapping(target = "emailVerified", source = "emailVerified")
     Customer toEntity(CustomerDTO dto);
 
     // Chuyển danh sách entity sang danh sách DTO

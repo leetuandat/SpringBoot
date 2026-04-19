@@ -13,6 +13,8 @@ import com.example.Project.entity.Customer;
 import com.example.Project.repository.CustomerRepository;
 import com.example.Project.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,17 +29,32 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final CustomerRepository customerRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customer customer = customerRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy tài khoản"));
+    public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
+        // Cho phép login bằng username hoặc email
+        Customer c = customerRepository.findByUsername(loginId)
+                .orElseGet(() -> customerRepository.findByEmailIgnoreCase(loginId)
+                        .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy tài khoản")));
 
-        // Tạo UserPrincipal trả về, chứa id của customer
+        // Tính toán các cờ theo Cách B + soft delete
+        boolean enabled = Boolean.TRUE.equals(c.isEmailVerified())
+                && Boolean.TRUE.equals(c.getIsActive())
+                && !Boolean.TRUE.equals(c.getIsDelete());
+
+        boolean accountNonLocked = !Boolean.TRUE.equals(c.getIsDelete()); // xoá mềm coi như lock
+        boolean accountNonExpired = true;
+        boolean credentialsNonExpired = true;
+
+        List<GrantedAuthority> authorities = List.of(() -> c.getRole()); // "ROLE_USER", ...
+
         return new UserPrincipal(
-                customer.getId(),
-                customer.getUsername(),
-                customer.getPassword(),
-                // chuyển đổi role thành GrantedAuthority list, ví dụ:
-                List.of(() -> customer.getRole())  // hoặc map roles sang SimpleGrantedAuthority
+                c.getId(),
+                c.getUsername(),           // hoặc dùng c.getEmail() làm principal tuỳ bạn
+                c.getPassword(),
+                List.of(() -> c.getRole()),
+                enabled,
+                accountNonLocked,
+                accountNonExpired,
+                credentialsNonExpired
         );
     }
 }
