@@ -73,7 +73,7 @@ function initAuthPopup() {
       document.body.classList.remove("show-popup");
       popup.classList.remove("show-signup");
       // Điều hướng sang trang đăng ký thực sự
-      window.location.href = "/register.html";
+      window.location.href = "register.html";
     });
   }
 
@@ -199,7 +199,7 @@ function initRegisterForm() {
   };
   const redirectToOtp = (email) => {
     try { sessionStorage.setItem("pendingEmail", email); } catch(e) {}
-    const url = `/otp.html?email=${encodeURIComponent(email)}`;
+    const url = `otp.html?email=${encodeURIComponent(email)}`;
     window.location.replace(url);
     setTimeout(() => { if (!/otp\.html/i.test(location.href)) window.location.href = url; }, 120);
   };
@@ -292,7 +292,7 @@ function initOtpPage() {
   const email = emailFromQuery || sessionStorage.getItem("pendingEmail") || "";
   if (!email) {
     // Không có email ngữ cảnh -> quay về đăng ký
-    location.replace("/register.html");
+    location.replace("register.html");
     return;
   }
   if (emailInput) emailInput.value = email;
@@ -410,11 +410,11 @@ function renderUserHeader() {
         z-index:1000;
         min-width:180px;
       ">
-        <a href="/profile.html" class="dropdown-item" style="display:flex;align-items:center;gap:8px;padding:8px 16px;color:#333;text-decoration:none;font-size:14px;">
+        <a href="profile.html" class="dropdown-item" style="display:flex;align-items:center;gap:8px;padding:8px 16px;color:#333;text-decoration:none;font-size:14px;">
           <i class="fa-solid fa-user-tie" style="font-size:16px;"></i>Thông tin tài khoản
         </a>
         ${isAdmin ? `
-        <a href="/admin.html" class="dropdown-item" style="display:flex;align-items:center;gap:8px;padding:8px 16px;color:#333;text-decoration:none;font-size:14px;">
+        <a href="admin.html" class="dropdown-item" style="display:flex;align-items:center;gap:8px;padding:8px 16px;color:#333;text-decoration:none;font-size:14px;">
           <i class="fa-brands fa-windows" style="font-size:16px;"></i> Quản lý
         </a>` : ""}
         <a href="#" id="logoutBtn" class="dropdown-item" style="display:flex;align-items:center;gap:8px;padding:8px 16px;color:#333;text-decoration:none;font-size:14px;">
